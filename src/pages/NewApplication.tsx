@@ -58,7 +58,7 @@ const INITIAL: IntakeFormData = {
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
     <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94a3b8', marginBottom: 5, letterSpacing: '0.02em' }}>
-      {children}{required && <span style={{ color: '#2dd4bf', marginLeft: 3 }}>*</span>}
+      {children}{required && <span style={{ color: '#e8424f', marginLeft: 3 }}>*</span>}
     </label>
   );
 }
@@ -85,7 +85,7 @@ function Input({ value, onChange, placeholder, type = 'text', disabled }: {
         transition: 'border-color 0.15s',
         opacity: disabled ? 0.5 : 1,
       }}
-      onFocus={e => (e.target.style.borderColor = '#2dd4bf')}
+      onFocus={e => (e.target.style.borderColor = '#e8424f')}
       onBlur={e => (e.target.style.borderColor = 'rgba(51,65,85,0.6)')}
     />
   );
@@ -244,8 +244,8 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
               style={{
                 padding: '16px 18px',
                 borderRadius: 8,
-                border: active ? '1.5px solid #14b8a6' : '1px solid rgba(51,65,85,0.5)',
-                background: active ? 'rgba(20,184,166,0.08)' : '#040d1a',
+                border: active ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
+                background: active ? 'rgba(196,30,45,0.08)' : '#040d1a',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s',
@@ -261,7 +261,7 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                     width: 18,
                     height: 18,
                     borderRadius: '50%',
-                    background: '#14b8a6',
+                    background: '#c41e2d',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -271,7 +271,7 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                 </div>
               )}
               <div style={{ fontSize: 22, marginBottom: 8 }}>{opt.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#2dd4bf' : '#e2e8f0', marginBottom: 4 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#e8424f' : '#e2e8f0', marginBottom: 4 }}>
                 {opt.label}
               </div>
               <div style={{ fontSize: 12, color: '#475569', lineHeight: 1.5 }}>{opt.description}</div>
@@ -298,9 +298,9 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                   flex: 1,
                   padding: '9px 14px',
                   borderRadius: 6,
-                  border: data.internationalTransactions === opt.v ? '1.5px solid #14b8a6' : '1px solid rgba(51,65,85,0.5)',
-                  background: data.internationalTransactions === opt.v ? 'rgba(20,184,166,0.08)' : '#040d1a',
-                  color: data.internationalTransactions === opt.v ? '#2dd4bf' : '#94a3b8',
+                  border: data.internationalTransactions === opt.v ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
+                  background: data.internationalTransactions === opt.v ? 'rgba(196,30,45,0.08)' : '#040d1a',
+                  color: data.internationalTransactions === opt.v ? '#e8424f' : '#94a3b8',
                   fontSize: 12.5,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -352,9 +352,9 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                   style={{
                     padding: '7px 14px',
                     borderRadius: 6,
-                    border: active ? '1.5px solid #14b8a6' : '1px solid rgba(51,65,85,0.4)',
-                    background: active ? 'rgba(20,184,166,0.08)' : '#040d1a',
-                    color: active ? '#2dd4bf' : '#94a3b8',
+                    border: active ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.4)',
+                    background: active ? 'rgba(196,30,45,0.08)' : '#040d1a',
+                    color: active ? '#e8424f' : '#94a3b8',
                     fontSize: 12.5,
                     fontWeight: active ? 700 : 500,
                     cursor: 'pointer',
@@ -364,7 +364,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                     gap: 6,
                   }}
                 >
-                  {active && <Check size={11} color="#2dd4bf" strokeWidth={2.5} />}
+                  {active && <Check size={11} color="#e8424f" strokeWidth={2.5} />}
                   {svc.label}
                 </button>
               );
@@ -393,7 +393,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
           fontFamily: 'inherit',
           lineHeight: 1.6,
         }}
-        onFocus={e => (e.target.style.borderColor = '#2dd4bf')}
+        onFocus={e => (e.target.style.borderColor = '#e8424f')}
         onBlur={e => (e.target.style.borderColor = 'rgba(51,65,85,0.6)')}
       />
     </div>
@@ -444,8 +444,8 @@ function ReviewSummary({ data }: { data: IntakeFormData }) {
     <div>
       <div
         style={{
-          background: 'rgba(20,184,166,0.05)',
-          border: '1px solid rgba(20,184,166,0.2)',
+          background: 'rgba(196,30,45,0.05)',
+          border: '1px solid rgba(196,30,45,0.2)',
           borderRadius: 8,
           padding: '14px 16px',
           marginBottom: 24,
@@ -454,7 +454,7 @@ function ReviewSummary({ data }: { data: IntakeFormData }) {
           gap: 10,
         }}
       >
-        <Check size={16} color="#2dd4bf" />
+        <Check size={16} color="#e8424f" />
         <span style={{ fontSize: 13, color: '#94a3b8' }}>
           Review the details below before submitting. You can go back to make edits.
         </span>
@@ -517,15 +517,15 @@ export function NewApplication() {
                 width: 72,
                 height: 72,
                 borderRadius: '50%',
-                background: 'rgba(20,184,166,0.1)',
-                border: '2px solid rgba(20,184,166,0.4)',
+                background: 'rgba(196,30,45,0.1)',
+                border: '2px solid rgba(196,30,45,0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
               }}
             >
-              <Check size={32} color="#14b8a6" strokeWidth={2.5} />
+              <Check size={32} color="#c41e2d" strokeWidth={2.5} />
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#e2e8f0', marginBottom: 8, letterSpacing: '-0.03em' }}>
               Application Submitted
@@ -533,7 +533,7 @@ export function NewApplication() {
             <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.6, marginBottom: 28 }}>
               <strong style={{ color: '#94a3b8' }}>{data.companyName}</strong> has been submitted for review.
               {submittedId && (
-                <> Application ID: <span style={{ fontFamily: 'monospace', color: '#2dd4bf', fontWeight: 700 }}>{submittedId}</span>.</>
+                <> Application ID: <span style={{ fontFamily: 'monospace', color: '#e8424f', fontWeight: 700 }}>{submittedId}</span>.</>
               )}{' '}
               It is now in the pending queue and will be assigned to a relationship manager.
             </p>
@@ -559,7 +559,7 @@ export function NewApplication() {
                   padding: '10px 20px',
                   borderRadius: 6,
                   border: 'none',
-                  background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                  background: 'linear-gradient(135deg, #c41e2d, #a31825)',
                   color: '#fff',
                   fontSize: 13,
                   fontWeight: 600,
@@ -595,8 +595,8 @@ export function NewApplication() {
                         width: 36,
                         height: 36,
                         borderRadius: '50%',
-                        border: done ? 'none' : active ? '2px solid #14b8a6' : '1px solid rgba(51,65,85,0.5)',
-                        background: done ? '#14b8a6' : active ? 'rgba(20,184,166,0.1)' : 'transparent',
+                        border: done ? 'none' : active ? '2px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
+                        background: done ? '#c41e2d' : active ? 'rgba(196,30,45,0.1)' : 'transparent',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -607,11 +607,11 @@ export function NewApplication() {
                       {done ? (
                         <Check size={16} color="#fff" strokeWidth={2.5} />
                       ) : (
-                        <s.icon size={15} color={active ? '#2dd4bf' : '#334155'} />
+                        <s.icon size={15} color={active ? '#e8424f' : '#334155'} />
                       )}
                     </div>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: done ? '#2dd4bf' : active ? '#2dd4bf' : '#334155', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: done ? '#e8424f' : active ? '#e8424f' : '#334155', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
                         Step {i + 1}
                       </div>
                       <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#e2e8f0' : done ? '#94a3b8' : '#475569' }}>
@@ -620,7 +620,7 @@ export function NewApplication() {
                     </div>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div style={{ flex: 1, height: 1, background: done ? '#14b8a6' : 'rgba(51,65,85,0.4)', margin: '0 14px', transition: 'background 0.3s' }} />
+                    <div style={{ flex: 1, height: 1, background: done ? '#c41e2d' : 'rgba(51,65,85,0.4)', margin: '0 14px', transition: 'background 0.3s' }} />
                   )}
                 </div>
               );
@@ -685,8 +685,8 @@ export function NewApplication() {
                   borderRadius: 6,
                   border: 'none',
                   background: isReview && submitting
-                    ? 'rgba(20,184,166,0.4)'
-                    : 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                    ? 'rgba(196,30,45,0.4)'
+                    : 'linear-gradient(135deg, #c41e2d, #a31825)',
                   color: '#fff',
                   fontSize: 13,
                   fontWeight: 700,

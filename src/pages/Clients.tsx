@@ -138,7 +138,7 @@ export function Clients() {
                             Approve an application to add a client.{' '}
                             <button
                               onClick={() => navigate('/applications')}
-                              style={{ color: '#2dd4bf', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
+                              style={{ color: '#e8424f', background: 'none', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}
                             >
                               Go to Applications →
                             </button>

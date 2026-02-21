@@ -1,6 +1,6 @@
 export const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   pending_review:   { label: 'Pending Review', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)', dot: '#94a3b8' },
-  in_review:        { label: 'In Review',       color: '#2dd4bf', bg: 'rgba(45,212,191,0.1)',  dot: '#2dd4bf' },
+  in_review:        { label: 'In Review',       color: '#38bdf8', bg: 'rgba(56,189,248,0.1)',  dot: '#38bdf8' },
   approved:         { label: 'Approved',         color: '#34d399', bg: 'rgba(52,211,153,0.1)',  dot: '#34d399' },
   rejected:         { label: 'Rejected',         color: '#fb7185', bg: 'rgba(251,113,133,0.1)', dot: '#fb7185' },
   on_hold:          { label: 'On Hold',          color: '#fbbf24', bg: 'rgba(251,191,36,0.1)',  dot: '#fbbf24' },

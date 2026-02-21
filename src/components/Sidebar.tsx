@@ -46,7 +46,7 @@ export function Sidebar() {
             style={{
               width: 32,
               height: 32,
-              background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+              background: 'linear-gradient(135deg, #c41e2d, #a31825)',
               borderRadius: 8,
               display: 'flex',
               alignItems: 'center',
@@ -91,9 +91,9 @@ export function Sidebar() {
               fontSize: 13.5,
               fontWeight: 500,
               transition: 'all 0.15s',
-              background: isActive ? 'rgba(45,212,191,0.08)' : 'transparent',
-              color: isActive ? '#2dd4bf' : '#94a3b8',
-              borderLeft: isActive ? '2px solid #2dd4bf' : '2px solid transparent',
+              background: isActive ? 'rgba(196,30,45,0.08)' : 'transparent',
+              color: isActive ? '#e8424f' : '#94a3b8',
+              borderLeft: isActive ? '2px solid #e8424f' : '2px solid transparent',
             })}
           >
             <Icon size={16} strokeWidth={1.75} />
@@ -118,13 +118,13 @@ export function Sidebar() {
             height: 32,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #1a3a7a, #122a5e)',
-            border: '1px solid rgba(45,212,191,0.3)',
+            border: '1px solid rgba(196,30,45,0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 12,
             fontWeight: 700,
-            color: '#2dd4bf',
+            color: '#e8424f',
             flexShrink: 0,
           }}
         >

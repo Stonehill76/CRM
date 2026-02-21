@@ -174,7 +174,7 @@ export function Dashboard() {
               alignItems: 'center',
               gap: 7,
               padding: '8px 16px',
-              background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+              background: 'linear-gradient(135deg, #c41e2d, #a31825)',
               border: 'none',
               borderRadius: 6,
               color: '#fff',
@@ -194,7 +194,7 @@ export function Dashboard() {
 
         {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
-          <StatCard label="Total Applications" value={total}           icon={FileText}     accent="#2dd4bf" />
+          <StatCard label="Total Applications" value={total}           icon={FileText}     accent="#e8424f" />
           <StatCard label="Pending Review"     value={pending}         icon={Clock}        accent="#fbbf24" />
           <StatCard label="Approved"           value={approved}        icon={CheckCircle2} accent="#34d399" />
           <StatCard label="Monthly Volume"     value={fmt(totalVolume)} icon={DollarSign}  accent="#a78bfa" />
@@ -235,7 +235,7 @@ export function Dashboard() {
               <Users size={16} color="#475569" />
             </div>
             {[
-              { name: 'James Okafor', role: 'RM', count: applications.filter(a => a.assignedTo === 'James Okafor').length, initials: 'JO', color: '#2dd4bf' },
+              { name: 'James Okafor', role: 'RM', count: applications.filter(a => a.assignedTo === 'James Okafor').length, initials: 'JO', color: '#e8424f' },
               { name: 'Priya Nair',   role: 'RM', count: applications.filter(a => a.assignedTo === 'Priya Nair').length,   initials: 'PN', color: '#a78bfa' },
               { name: 'Unassigned',   role: '',   count: applications.filter(a => !a.assignedTo).length,                   initials: '—',  color: '#475569' },
             ].map(member => (
@@ -310,7 +310,7 @@ export function Dashboard() {
                   alignItems: 'center',
                   gap: 4,
                   fontSize: 12,
-                  color: '#2dd4bf',
+                  color: '#e8424f',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
@@ -322,7 +322,7 @@ export function Dashboard() {
             </div>
             {recent.length === 0 ? (
               <div style={{ padding: '32px 22px', textAlign: 'center', fontSize: 13, color: '#334155' }}>
-                No applications yet. <button onClick={() => navigate('/new-application')} style={{ color: '#2dd4bf', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create one →</button>
+                No applications yet. <button onClick={() => navigate('/new-application')} style={{ color: '#e8424f', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create one →</button>
               </div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -356,7 +356,7 @@ export function Dashboard() {
                         cursor: 'pointer',
                         transition: 'background 0.12s',
                       }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(45,212,191,0.03)')}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(196,30,45,0.03)')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <td style={{ padding: '12px 22px' }}>

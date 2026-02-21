@@ -86,7 +86,7 @@ export function Topbar({ title, subtitle, actions }: TopbarProps) {
             width: 6,
             height: 6,
             borderRadius: '50%',
-            background: '#2dd4bf',
+            background: '#e8424f',
             border: '1.5px solid #071428',
           }}
         />

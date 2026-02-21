@@ -86,7 +86,7 @@ export function Applications() {
 
   function SortIcon({ col }: { col: SortKey }) {
     if (sortKey !== col) return <ChevronDown size={12} color="#334155" />;
-    return sortDir === 'asc' ? <ChevronUp size={12} color="#2dd4bf" /> : <ChevronDown size={12} color="#2dd4bf" />;
+    return sortDir === 'asc' ? <ChevronUp size={12} color="#e8424f" /> : <ChevronDown size={12} color="#e8424f" />;
   }
 
   const TH = ({ label, col, style }: { label: string; col?: SortKey; style?: React.CSSProperties }) => (
@@ -96,7 +96,7 @@ export function Applications() {
         padding: '11px 18px',
         textAlign: 'left',
         fontSize: 11,
-        color: col && sortKey === col ? '#2dd4bf' : '#475569',
+        color: col && sortKey === col ? '#e8424f' : '#475569',
         fontWeight: 600,
         letterSpacing: '0.07em',
         textTransform: 'uppercase',
@@ -126,7 +126,7 @@ export function Applications() {
               alignItems: 'center',
               gap: 7,
               padding: '8px 16px',
-              background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
+              background: 'linear-gradient(135deg, #c41e2d, #a31825)',
               border: 'none',
               borderRadius: 6,
               color: '#fff',
@@ -189,12 +189,12 @@ export function Applications() {
                     padding: '5px 11px',
                     borderRadius: 5,
                     border: isActive
-                      ? `1px solid ${cfg?.color ?? '#2dd4bf'}60`
+                      ? `1px solid ${cfg?.color ?? '#e8424f'}60`
                       : '1px solid rgba(51,65,85,0.4)',
                     background: isActive
-                      ? (cfg?.bg ?? 'rgba(45,212,191,0.08)')
+                      ? (cfg?.bg ?? 'rgba(196,30,45,0.08)')
                       : '#0d1f3c',
-                    color: isActive ? (cfg?.color ?? '#2dd4bf') : '#94a3b8',
+                    color: isActive ? (cfg?.color ?? '#e8424f') : '#94a3b8',
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -252,15 +252,15 @@ export function Applications() {
                       style={{
                         borderBottom: i < paginated.length - 1 ? '1px solid rgba(51,65,85,0.2)' : 'none',
                         transition: 'background 0.12s',
-                        background: selected?.id === app.id ? 'rgba(45,212,191,0.04)' : 'transparent',
+                        background: selected?.id === app.id ? 'rgba(196,30,45,0.04)' : 'transparent',
                         cursor: 'pointer',
                       }}
                       onClick={() => setSelected(selected?.id === app.id ? null : app)}
-                      onMouseEnter={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'rgba(45,212,191,0.025)'; }}
+                      onMouseEnter={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'rgba(196,30,45,0.025)'; }}
                       onMouseLeave={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'transparent'; }}
                     >
                       <td style={{ padding: '13px 18px' }}>
-                        <span style={{ fontSize: 12, fontFamily: 'monospace', color: '#2dd4bf', fontWeight: 600, background: 'rgba(45,212,191,0.08)', padding: '2px 6px', borderRadius: 3 }}>
+                        <span style={{ fontSize: 12, fontFamily: 'monospace', color: '#e8424f', fontWeight: 600, background: 'rgba(196,30,45,0.08)', padding: '2px 6px', borderRadius: 3 }}>
                           {app.id}
                         </span>
                       </td>
@@ -361,9 +361,9 @@ export function Applications() {
                     style={{
                       padding: '5px 10px',
                       borderRadius: 5,
-                      border: p === page ? '1px solid #2dd4bf40' : '1px solid rgba(51,65,85,0.4)',
-                      background: p === page ? 'rgba(45,212,191,0.1)' : '#071428',
-                      color: p === page ? '#2dd4bf' : '#94a3b8',
+                      border: p === page ? '1px solid #e8424f40' : '1px solid rgba(51,65,85,0.4)',
+                      background: p === page ? 'rgba(196,30,45,0.1)' : '#071428',
+                      color: p === page ? '#e8424f' : '#94a3b8',
                       cursor: 'pointer',
                       fontWeight: p === page ? 700 : 400,
                       fontSize: 13,
@@ -585,8 +585,8 @@ export function Applications() {
                     borderRadius: 6,
                     border: 'none',
                     background: approving
-                      ? 'rgba(20,184,166,0.4)'
-                      : 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                      ? 'rgba(196,30,45,0.4)'
+                      : 'linear-gradient(135deg, #c41e2d, #a31825)',
                     color: '#fff',
                     fontSize: 13,
                     fontWeight: 600,
