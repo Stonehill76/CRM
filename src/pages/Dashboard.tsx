@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Clock,
@@ -12,8 +13,9 @@ import {
 } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
 import { StatusBadge } from '../components/StatusBadge';
-import { APPLICATIONS, STATUS_CONFIG } from '../data/applications';
-import type { ApplicationStatus } from '../types';
+import { STATUS_CONFIG } from '../data/applications';
+import { getApplications } from '../lib/api';
+import type { Application, ApplicationStatus } from '../types';
 
 function fmt(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -89,12 +91,20 @@ function StatCard({
   );
 }
 
-function StatusDistributionBar() {
+function StatusDistributionBar({ applications }: { applications: Application[] }) {
+  if (applications.length === 0) {
+    return (
+      <div style={{ marginTop: 6, fontSize: 13, color: '#334155' }}>
+        No applications yet.
+      </div>
+    );
+  }
+
   const counts: Record<string, number> = {};
-  APPLICATIONS.forEach(a => {
+  applications.forEach(a => {
     counts[a.status] = (counts[a.status] || 0) + 1;
   });
-  const total = APPLICATIONS.length;
+  const total = applications.length;
 
   return (
     <div style={{ marginTop: 6 }}>
@@ -134,14 +144,20 @@ function StatusDistributionBar() {
 
 export function Dashboard() {
   const navigate = useNavigate();
+  const [applications, setApplications] = useState<Application[]>([]);
 
-  const total = APPLICATIONS.length;
-  const pending = APPLICATIONS.filter(a => a.status === 'pending_review').length;
-  const approved = APPLICATIONS.filter(a => a.status === 'approved').length;
-  const totalVolume = APPLICATIONS.reduce((s, a) => s + a.monthlyTransactionVolume, 0);
-  const recent = [...APPLICATIONS].sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()).slice(0, 5);
+  useEffect(() => {
+    getApplications().then(setApplications).catch(() => {});
+  }, []);
 
-  const actionItems = APPLICATIONS.filter(
+  const total       = applications.length;
+  const pending     = applications.filter(a => a.status === 'pending_review').length;
+  const approved    = applications.filter(a => a.status === 'approved').length;
+  const totalVolume = applications.reduce((s, a) => s + a.monthlyTransactionVolume, 0);
+  const recent      = [...applications]
+    .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
+    .slice(0, 5);
+  const actionItems = applications.filter(
     a => a.status === 'documents_needed' || a.status === 'on_hold'
   );
 
@@ -178,10 +194,10 @@ export function Dashboard() {
 
         {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 28 }}>
-          <StatCard label="Total Applications" value={total} delta={14} deltaLabel="vs last month" icon={FileText} accent="#2dd4bf" />
-          <StatCard label="Pending Review"    value={pending} icon={Clock} accent="#fbbf24" />
-          <StatCard label="Approved"          value={approved} delta={8} deltaLabel="vs last month" icon={CheckCircle2} accent="#34d399" />
-          <StatCard label="Monthly Volume"    value={fmt(totalVolume)} delta={22} deltaLabel="vs last month" icon={DollarSign} accent="#a78bfa" />
+          <StatCard label="Total Applications" value={total}           icon={FileText}     accent="#2dd4bf" />
+          <StatCard label="Pending Review"     value={pending}         icon={Clock}        accent="#fbbf24" />
+          <StatCard label="Approved"           value={approved}        icon={CheckCircle2} accent="#34d399" />
+          <StatCard label="Monthly Volume"     value={fmt(totalVolume)} icon={DollarSign}  accent="#a78bfa" />
         </div>
 
         {/* Middle row */}
@@ -202,7 +218,7 @@ export function Dashboard() {
               </div>
               <Activity size={16} color="#475569" />
             </div>
-            <StatusDistributionBar />
+            <StatusDistributionBar applications={applications} />
           </div>
 
           {/* Team */}
@@ -219,9 +235,9 @@ export function Dashboard() {
               <Users size={16} color="#475569" />
             </div>
             {[
-              { name: 'James Okafor', role: 'RM', count: APPLICATIONS.filter(a => a.assignedTo === 'James Okafor').length, initials: 'JO', color: '#2dd4bf' },
-              { name: 'Priya Nair', role: 'RM', count: APPLICATIONS.filter(a => a.assignedTo === 'Priya Nair').length, initials: 'PN', color: '#a78bfa' },
-              { name: 'Unassigned', role: '', count: APPLICATIONS.filter(a => !a.assignedTo).length, initials: '—', color: '#475569' },
+              { name: 'James Okafor', role: 'RM', count: applications.filter(a => a.assignedTo === 'James Okafor').length, initials: 'JO', color: '#2dd4bf' },
+              { name: 'Priya Nair',   role: 'RM', count: applications.filter(a => a.assignedTo === 'Priya Nair').length,   initials: 'PN', color: '#a78bfa' },
+              { name: 'Unassigned',   role: '',   count: applications.filter(a => !a.assignedTo).length,                   initials: '—',  color: '#475569' },
             ].map(member => (
               <div
                 key={member.name}
@@ -304,57 +320,63 @@ export function Dashboard() {
                 View all <ArrowRight size={12} />
               </button>
             </div>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
-                  {['Company', 'Submitted', 'Status', 'Volume'].map(h => (
-                    <th
-                      key={h}
-                      style={{
-                        padding: '10px 22px',
-                        textAlign: 'left',
-                        fontSize: 11,
-                        color: '#475569',
-                        fontWeight: 600,
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((app, i) => (
-                  <tr
-                    key={app.id}
-                    onClick={() => navigate('/applications')}
-                    style={{
-                      borderBottom: i < recent.length - 1 ? '1px solid rgba(51,65,85,0.25)' : 'none',
-                      cursor: 'pointer',
-                      transition: 'background 0.12s',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(45,212,191,0.03)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <td style={{ padding: '12px 22px' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{app.companyName}</div>
-                      <div style={{ fontSize: 11, color: '#475569' }}>{app.id}</div>
-                    </td>
-                    <td style={{ padding: '12px 22px', fontSize: 12.5, color: '#94a3b8' }}>
-                      {fmtDate(app.submittedAt)}
-                    </td>
-                    <td style={{ padding: '12px 22px' }}>
-                      <StatusBadge status={app.status as ApplicationStatus} size="sm" />
-                    </td>
-                    <td style={{ padding: '12px 22px', fontSize: 13, color: '#e2e8f0', fontWeight: 600 }}>
-                      {fmt(app.monthlyTransactionVolume)}/mo
-                    </td>
+            {recent.length === 0 ? (
+              <div style={{ padding: '32px 22px', textAlign: 'center', fontSize: 13, color: '#334155' }}>
+                No applications yet. <button onClick={() => navigate('/new-application')} style={{ color: '#2dd4bf', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create one →</button>
+              </div>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                    {['Company', 'Submitted', 'Status', 'Volume'].map(h => (
+                      <th
+                        key={h}
+                        style={{
+                          padding: '10px 22px',
+                          textAlign: 'left',
+                          fontSize: 11,
+                          color: '#475569',
+                          fontWeight: 600,
+                          letterSpacing: '0.06em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {recent.map((app, i) => (
+                    <tr
+                      key={app.id}
+                      onClick={() => navigate('/applications')}
+                      style={{
+                        borderBottom: i < recent.length - 1 ? '1px solid rgba(51,65,85,0.25)' : 'none',
+                        cursor: 'pointer',
+                        transition: 'background 0.12s',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(45,212,191,0.03)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <td style={{ padding: '12px 22px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{app.companyName}</div>
+                        <div style={{ fontSize: 11, color: '#475569' }}>{app.id}</div>
+                      </td>
+                      <td style={{ padding: '12px 22px', fontSize: 12.5, color: '#94a3b8' }}>
+                        {fmtDate(app.submittedAt)}
+                      </td>
+                      <td style={{ padding: '12px 22px' }}>
+                        <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                      </td>
+                      <td style={{ padding: '12px 22px', fontSize: 13, color: '#e2e8f0', fontWeight: 600 }}>
+                        {fmt(app.monthlyTransactionVolume)}/mo
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           {/* Action items */}
@@ -427,10 +449,10 @@ export function Dashboard() {
           }}
         >
           {[
-            { label: 'Avg. Review Time', value: '3.2 days' },
-            { label: 'Approval Rate', value: `${Math.round((approved / total) * 100)}%` },
-            { label: 'Intl. Transactions', value: `${APPLICATIONS.filter(a => a.internationalTransactions).length} clients` },
-            { label: 'Total Employees', value: APPLICATIONS.reduce((s, a) => s + a.employeeCount, 0).toLocaleString() },
+            { label: 'Avg. Review Time',  value: '3.2 days' },
+            { label: 'Approval Rate',     value: total > 0 ? `${Math.round((approved / total) * 100)}%` : '—' },
+            { label: 'Intl. Transactions', value: `${applications.filter(a => a.internationalTransactions).length} clients` },
+            { label: 'Total Employees',   value: applications.reduce((s, a) => s + a.employeeCount, 0).toLocaleString() },
           ].map(kpi => (
             <div
               key={kpi.label}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -9,10 +9,12 @@ import {
   PlusCircle,
   ChevronLeft,
   ChevronRight,
+  CheckCircle2,
 } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
 import { StatusBadge } from '../components/StatusBadge';
-import { APPLICATIONS, STATUS_CONFIG, ACCOUNT_TYPE_CONFIG } from '../data/applications';
+import { STATUS_CONFIG, ACCOUNT_TYPE_CONFIG } from '../data/applications';
+import { getApplications, updateApplicationStatus } from '../lib/api';
 import type { Application, ApplicationStatus } from '../types';
 
 function fmt(n: number) {
@@ -28,15 +30,35 @@ type SortKey = 'companyName' | 'submittedAt' | 'monthlyTransactionVolume' | 'sta
 
 export function Applications() {
   const navigate = useNavigate();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ApplicationStatus | 'all'>('all');
   const [sortKey, setSortKey] = useState<SortKey>('submittedAt');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Application | null>(null);
   const [page, setPage] = useState(1);
+  const [approving, setApproving] = useState(false);
   const PAGE_SIZE = 10;
 
-  const filtered = APPLICATIONS.filter(a => {
+  useEffect(() => {
+    getApplications()
+      .then(setApplications)
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleApprove(id: string) {
+    setApproving(true);
+    try {
+      const updated = await updateApplicationStatus(id, 'approved');
+      setApplications(apps => apps.map(a => a.id === updated.id ? updated : a));
+      setSelected(updated);
+    } finally {
+      setApproving(false);
+    }
+  }
+
+  const filtered = applications.filter(a => {
     const matchSearch =
       a.companyName.toLowerCase().includes(search.toLowerCase()) ||
       a.id.toLowerCase().includes(search.toLowerCase()) ||
@@ -211,7 +233,13 @@ export function Applications() {
                 </tr>
               </thead>
               <tbody>
-                {paginated.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
+                      Loading…
+                    </td>
+                  </tr>
+                ) : paginated.length === 0 ? (
                   <tr>
                     <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
                       No applications found
@@ -434,10 +462,10 @@ export function Applications() {
                 {
                   title: 'Banking Details',
                   rows: [
-                    ['Account Types', selected.accountTypes.map(t => ACCOUNT_TYPE_CONFIG[t].label).join(', ')],
+                    ['Account Types', selected.accountTypes.map(t => ACCOUNT_TYPE_CONFIG[t]?.label ?? t).join(', ')],
                     ['Monthly Volume', fmt(selected.monthlyTransactionVolume)],
                     ['International', selected.internationalTransactions ? 'Yes' : 'No'],
-                    ['Services', selected.requestedServices.map(s => s.replace(/_/g, ' ')).join(', ')],
+                    ['Services', selected.requestedServices.map(s => s.replace(/_/g, ' ')).join(', ') || 'None'],
                   ],
                 },
                 {
@@ -523,21 +551,56 @@ export function Applications() {
               >
                 Edit
               </button>
-              <button
-                style={{
-                  flex: 2,
-                  padding: '9px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                Update Status
-              </button>
+
+              {selected.status === 'approved' ? (
+                <button
+                  disabled
+                  onClick={() => navigate('/clients')}
+                  style={{
+                    flex: 2,
+                    padding: '9px',
+                    borderRadius: 6,
+                    border: '1px solid rgba(52,211,153,0.3)',
+                    background: 'rgba(52,211,153,0.08)',
+                    color: '#34d399',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <CheckCircle2 size={14} />
+                  Approved — View in Clients
+                </button>
+              ) : (
+                <button
+                  disabled={approving}
+                  onClick={() => handleApprove(selected.id)}
+                  style={{
+                    flex: 2,
+                    padding: '9px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: approving
+                      ? 'rgba(20,184,166,0.4)'
+                      : 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    cursor: approving ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <CheckCircle2 size={14} />
+                  {approving ? 'Approving…' : 'Approve'}
+                </button>
+              )}
             </div>
           </div>
         )}

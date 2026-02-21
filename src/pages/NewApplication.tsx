@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, ChevronRight, Building2, CreditCard, Layers, ArrowLeft } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
+import { createApplication } from '../lib/api';
 import type { IntakeFormData, AccountType } from '../types';
 
 const US_STATES = [
@@ -487,13 +488,22 @@ export function NewApplication() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<IntakeFormData>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submittedId, setSubmittedId] = useState('');
 
   function change(key: keyof IntakeFormData, value: unknown) {
     setData(d => ({ ...d, [key]: value }));
   }
 
-  function handleSubmit() {
-    setSubmitted(true);
+  async function handleSubmit() {
+    setSubmitting(true);
+    try {
+      const app = await createApplication(data);
+      setSubmittedId(app.id);
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -522,7 +532,10 @@ export function NewApplication() {
             </h2>
             <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.6, marginBottom: 28 }}>
               <strong style={{ color: '#94a3b8' }}>{data.companyName}</strong> has been submitted for review.
-              The application is now in the pending queue and will be assigned to a relationship manager.
+              {submittedId && (
+                <> Application ID: <span style={{ fontFamily: 'monospace', color: '#2dd4bf', fontWeight: 700 }}>{submittedId}</span>.</>
+              )}{' '}
+              It is now in the pending queue and will be assigned to a relationship manager.
             </p>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
               <button
@@ -662,6 +675,7 @@ export function NewApplication() {
                 {step === 0 ? 'Cancel' : 'Back'}
               </button>
               <button
+                disabled={isReview && submitting}
                 onClick={isReview ? handleSubmit : () => setStep(s => s + 1)}
                 style={{
                   display: 'flex',
@@ -670,15 +684,17 @@ export function NewApplication() {
                   padding: '10px 22px',
                   borderRadius: 6,
                   border: 'none',
-                  background: isReview ? 'linear-gradient(135deg, #14b8a6, #0d9488)' : 'linear-gradient(135deg, #14b8a6, #0d9488)',
+                  background: isReview && submitting
+                    ? 'rgba(20,184,166,0.4)'
+                    : 'linear-gradient(135deg, #14b8a6, #0d9488)',
                   color: '#fff',
                   fontSize: 13,
                   fontWeight: 700,
-                  cursor: 'pointer',
+                  cursor: isReview && submitting ? 'not-allowed' : 'pointer',
                   letterSpacing: '-0.01em',
                 }}
               >
-                {isReview ? 'Submit Application' : 'Continue'}
+                {isReview ? (submitting ? 'Submitting…' : 'Submit Application') : 'Continue'}
                 {!isReview && <ChevronRight size={14} />}
               </button>
             </div>
