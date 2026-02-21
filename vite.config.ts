@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    allowedHosts: ['extremely-eyes-pike-michigan.trycloudflare.com'],
+    allowedHosts: ['structured-vinyl-evaluate-regression.trycloudflare.com'],
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
