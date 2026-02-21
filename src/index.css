@@ -1,45 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-950: #040d1a;
-  --color-navy-900: #071428;
-  --color-navy-800: #0d2047;
-  --color-navy-700: #122a5e;
-  --color-navy-600: #1a3a7a;
-
-  --color-slate-850: #1b222e;
-  --color-slate-800: #222b38;
-  --color-slate-750: #2a3547;
-  --color-slate-700: #334155;
-  --color-slate-600: #475569;
-  --color-slate-400: #94a3b8;
-  --color-slate-300: #cbd5e1;
-  --color-slate-200: #e2e8f0;
-  --color-slate-100: #f1f5f9;
-
-  --color-crimson-400: #e8424f;
   --color-crimson-500: #c41e2d;
   --color-crimson-600: #a31825;
-
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-
-  --color-amber-400: #fbbf24;
-  --color-rose-400: #fb7185;
-  --color-violet-400: #a78bfa;
-
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -49,18 +20,59 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overscroll-behavior: none;
+}
+
+html {
+  height: -webkit-fill-available;
 }
 
 #root {
   min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Prevent iOS input zoom (font-size must be >= 16px on mobile) */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Faster tap response */
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+/* iOS safe area support */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+/* Smooth scroll on iOS */
+.scroll-ios {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f6f8;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #d1d5db;

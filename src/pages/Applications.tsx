@@ -15,6 +15,7 @@ import { Topbar } from '../components/Topbar';
 import { StatusBadge } from '../components/StatusBadge';
 import { STATUS_CONFIG, ACCOUNT_TYPE_CONFIG } from '../data/applications';
 import { getApplications, updateApplicationStatus } from '../lib/api';
+import { useLayout } from '../contexts/LayoutContext';
 import type { Application, ApplicationStatus } from '../types';
 
 function fmt(n: number) {
@@ -30,6 +31,7 @@ type SortKey = 'companyName' | 'submittedAt' | 'monthlyTransactionVolume' | 'sta
 
 export function Applications() {
   const navigate = useNavigate();
+  const { isMobile, isNarrow } = useLayout();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -85,7 +87,7 @@ export function Applications() {
   }
 
   function SortIcon({ col }: { col: SortKey }) {
-    if (sortKey !== col) return <ChevronDown size={12} color="#334155" />;
+    if (sortKey !== col) return <ChevronDown size={12} color="#9ca3af" />;
     return sortDir === 'asc' ? <ChevronUp size={12} color="#e8424f" /> : <ChevronDown size={12} color="#e8424f" />;
   }
 
@@ -93,7 +95,7 @@ export function Applications() {
     <th
       onClick={col ? () => toggleSort(col) : undefined}
       style={{
-        padding: '11px 18px',
+        padding: '11px 16px',
         textAlign: 'left',
         fontSize: 11,
         color: col && sortKey === col ? '#e8424f' : '#9ca3af',
@@ -113,6 +115,8 @@ export function Applications() {
     </th>
   );
 
+  const pad = isMobile ? '16px' : '28px';
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Topbar
@@ -124,26 +128,28 @@ export function Applications() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 7,
-              padding: '8px 16px',
+              gap: 6,
+              padding: isMobile ? '8px 12px' : '8px 14px',
               background: 'linear-gradient(135deg, #c41e2d, #a31825)',
               border: 'none',
               borderRadius: 6,
               color: '#fff',
               fontSize: 13,
               fontWeight: 600,
-              cursor: 'pointer',
+              flexShrink: 0,
             }}
           >
             <PlusCircle size={14} />
-            New
+            {isMobile ? 'New' : 'New'}
           </button>
         }
       />
 
-      <div style={{ flex: 1, padding: '24px 28px', overflowY: 'auto' }}>
+      <div className="scroll-ios" style={{ flex: 1, padding: `20px ${pad}`, overflowY: 'auto' }}>
+
         {/* Filters */}
-        <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
+          {/* Search row */}
           <div
             style={{
               display: 'flex',
@@ -152,12 +158,10 @@ export function Applications() {
               background: '#ffffff',
               border: '1px solid #e5e7eb',
               borderRadius: 6,
-              padding: '8px 12px',
-              flex: '1 1 220px',
-              maxWidth: 300,
+              padding: '10px 12px',
             }}
           >
-            <Search size={14} color="#475569" />
+            <Search size={14} color="#9ca3af" />
             <input
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
@@ -173,10 +177,10 @@ export function Applications() {
             />
           </div>
 
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Filter size={13} color="#475569" />
-              <span style={{ fontSize: 12, color: '#9ca3af', fontWeight: 600 }}>Status:</span>
+          {/* Status filter pills — horizontal scroll on mobile */}
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 2, alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+              <Filter size={12} color="#9ca3af" />
             </div>
             {(['all', ...Object.keys(STATUS_CONFIG)] as Array<'all' | ApplicationStatus>).map(s => {
               const isActive = statusFilter === s;
@@ -187,18 +191,14 @@ export function Applications() {
                   onClick={() => { setStatusFilter(s); setPage(1); }}
                   style={{
                     padding: '5px 11px',
-                    borderRadius: 5,
-                    border: isActive
-                      ? `1px solid ${cfg?.color ?? '#e8424f'}60`
-                      : '1px solid rgba(0,0,0,0.07)',
-                    background: isActive
-                      ? (cfg?.bg ?? 'rgba(196,30,45,0.08)')
-                      : '#ffffff',
+                    borderRadius: 20,
+                    border: isActive ? `1px solid ${cfg?.color ?? '#e8424f'}60` : '1px solid #e5e7eb',
+                    background: isActive ? (cfg?.bg ?? 'rgba(196,30,45,0.08)') : '#ffffff',
                     color: isActive ? (cfg?.color ?? '#e8424f') : '#6b7280',
                     fontSize: 12,
                     fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.12s',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
                   }}
                 >
                   {s === 'all' ? 'All' : cfg?.label}
@@ -208,7 +208,7 @@ export function Applications() {
           </div>
         </div>
 
-        {/* Table */}
+        {/* Table container */}
         <div
           style={{
             background: '#ffffff',
@@ -217,111 +217,157 @@ export function Applications() {
             overflow: 'hidden',
           }}
         >
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-              <thead style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', background: '#f8f9fb' }}>
-                <tr>
-                  <TH label="ID" style={{ width: 100 }} />
-                  <TH label="Company" col="companyName" />
-                  <TH label="Contact" />
-                  <TH label="Accounts" />
-                  <TH label="Volume/mo" col="monthlyTransactionVolume" />
-                  <TH label="Status" col="status" />
-                  <TH label="Submitted" col="submittedAt" />
-                  <TH label="Assigned" />
-                  <TH label="" />
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
+          {/* Mobile card list */}
+          {isMobile ? (
+            <div>
+              {loading ? (
+                <div style={{ padding: '40px 16px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>Loading…</div>
+              ) : paginated.length === 0 ? (
+                <div style={{ padding: '40px 16px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>No applications found</div>
+              ) : (
+                paginated.map((app, i) => (
+                  <div
+                    key={app.id}
+                    onClick={() => setSelected(selected?.id === app.id ? null : app)}
+                    style={{
+                      padding: '14px 16px',
+                      borderBottom: i < paginated.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
+                      background: selected?.id === app.id ? 'rgba(196,30,45,0.04)' : 'transparent',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 5 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', flex: 1, marginRight: 8 }}>
+                        {app.companyName}
+                      </div>
+                      <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                      <span style={{ fontSize: 11, color: '#e8424f', fontFamily: 'monospace', fontWeight: 600, background: 'rgba(196,30,45,0.08)', padding: '1px 5px', borderRadius: 3 }}>
+                        {app.id}
+                      </span>
+                      <span style={{ fontSize: 11, color: '#9ca3af' }}>{app.industry}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div style={{ fontSize: 12, color: '#6b7280' }}>
+                        {app.primaryContact.firstName} {app.primaryContact.lastName}
+                      </div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#111827' }}>
+                        {fmt(app.monthlyTransactionVolume)}/mo
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : (
+            /* Desktop table */
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
+                <thead style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', background: '#f8f9fb' }}>
                   <tr>
-                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
-                      Loading…
-                    </td>
+                    <TH label="ID" style={{ width: 100 }} />
+                    <TH label="Company" col="companyName" />
+                    <TH label="Contact" />
+                    <TH label="Accounts" />
+                    <TH label="Volume/mo" col="monthlyTransactionVolume" />
+                    <TH label="Status" col="status" />
+                    <TH label="Submitted" col="submittedAt" />
+                    <TH label="Assigned" />
+                    <TH label="" />
                   </tr>
-                ) : paginated.length === 0 ? (
-                  <tr>
-                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
-                      No applications found
-                    </td>
-                  </tr>
-                ) : (
-                  paginated.map((app, i) => (
-                    <tr
-                      key={app.id}
-                      style={{
-                        borderBottom: i < paginated.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
-                        transition: 'background 0.12s',
-                        background: selected?.id === app.id ? 'rgba(196,30,45,0.04)' : 'transparent',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => setSelected(selected?.id === app.id ? null : app)}
-                      onMouseEnter={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'rgba(196,30,45,0.025)'; }}
-                      onMouseLeave={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'transparent'; }}
-                    >
-                      <td style={{ padding: '13px 18px' }}>
-                        <span style={{ fontSize: 12, fontFamily: 'monospace', color: '#e8424f', fontWeight: 600, background: 'rgba(196,30,45,0.08)', padding: '2px 6px', borderRadius: 3 }}>
-                          {app.id}
-                        </span>
-                      </td>
-                      <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
-                        <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{app.industry}</div>
-                      </td>
-                      <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13, color: '#374151' }}>
-                          {app.primaryContact.firstName} {app.primaryContact.lastName}
-                        </div>
-                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{app.primaryContact.title}</div>
-                      </td>
-                      <td style={{ padding: '13px 18px' }}>
-                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                          {app.accountTypes.map(t => (
-                            <span
-                              key={t}
-                              style={{
-                                fontSize: 10.5,
-                                fontWeight: 600,
-                                color: '#6b7280',
-                                background: 'rgba(0,0,0,0.06)',
-                                border: '1px solid rgba(0,0,0,0.07)',
-                                padding: '2px 6px',
-                                borderRadius: 3,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                              }}
-                            >
-                              {ACCOUNT_TYPE_CONFIG[t]?.label}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td style={{ padding: '13px 18px', fontSize: 13.5, fontWeight: 700, color: '#111827' }}>
-                        {fmt(app.monthlyTransactionVolume)}
-                      </td>
-                      <td style={{ padding: '13px 18px' }}>
-                        <StatusBadge status={app.status as ApplicationStatus} size="sm" />
-                      </td>
-                      <td style={{ padding: '13px 18px', fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
-                        {fmtDate(app.submittedAt)}
-                      </td>
-                      <td style={{ padding: '13px 18px', fontSize: 12.5, color: app.assignedTo ? '#374151' : '#d1d5db' }}>
-                        {app.assignedTo || 'Unassigned'}
-                      </td>
-                      <td style={{ padding: '13px 18px' }}>
-                        <button
-                          onClick={e => { e.stopPropagation(); setSelected(selected?.id === app.id ? null : app); }}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d1d5db' }}
-                        >
-                          <ExternalLink size={14} />
-                        </button>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
+                        Loading…
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : paginated.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
+                        No applications found
+                      </td>
+                    </tr>
+                  ) : (
+                    paginated.map((app, i) => (
+                      <tr
+                        key={app.id}
+                        style={{
+                          borderBottom: i < paginated.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
+                          transition: 'background 0.12s',
+                          background: selected?.id === app.id ? 'rgba(196,30,45,0.04)' : 'transparent',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => setSelected(selected?.id === app.id ? null : app)}
+                        onMouseEnter={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'rgba(196,30,45,0.025)'; }}
+                        onMouseLeave={e => { if (selected?.id !== app.id) e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <td style={{ padding: '13px 16px' }}>
+                          <span style={{ fontSize: 12, fontFamily: 'monospace', color: '#e8424f', fontWeight: 600, background: 'rgba(196,30,45,0.08)', padding: '2px 6px', borderRadius: 3 }}>
+                            {app.id}
+                          </span>
+                        </td>
+                        <td style={{ padding: '13px 16px' }}>
+                          <div style={{ fontSize: 13.5, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
+                          <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{app.industry}</div>
+                        </td>
+                        <td style={{ padding: '13px 16px' }}>
+                          <div style={{ fontSize: 13, color: '#374151' }}>
+                            {app.primaryContact.firstName} {app.primaryContact.lastName}
+                          </div>
+                          <div style={{ fontSize: 11, color: '#9ca3af' }}>{app.primaryContact.title}</div>
+                        </td>
+                        <td style={{ padding: '13px 16px' }}>
+                          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                            {app.accountTypes.map(t => (
+                              <span
+                                key={t}
+                                style={{
+                                  fontSize: 10.5,
+                                  fontWeight: 600,
+                                  color: '#6b7280',
+                                  background: 'rgba(0,0,0,0.06)',
+                                  border: '1px solid rgba(0,0,0,0.07)',
+                                  padding: '2px 6px',
+                                  borderRadius: 3,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.05em',
+                                }}
+                              >
+                                {ACCOUNT_TYPE_CONFIG[t]?.label}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td style={{ padding: '13px 16px', fontSize: 13.5, fontWeight: 700, color: '#111827' }}>
+                          {fmt(app.monthlyTransactionVolume)}
+                        </td>
+                        <td style={{ padding: '13px 16px' }}>
+                          <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                        </td>
+                        <td style={{ padding: '13px 16px', fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                          {fmtDate(app.submittedAt)}
+                        </td>
+                        <td style={{ padding: '13px 16px', fontSize: 12.5, color: app.assignedTo ? '#374151' : '#d1d5db' }}>
+                          {app.assignedTo || 'Unassigned'}
+                        </td>
+                        <td style={{ padding: '13px 16px' }}>
+                          <button
+                            onClick={e => { e.stopPropagation(); setSelected(selected?.id === app.id ? null : app); }}
+                            style={{ background: 'none', border: 'none', color: '#d1d5db' }}
+                          >
+                            <ExternalLink size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -330,41 +376,41 @@ export function Applications() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '12px 18px',
+                padding: '12px 16px',
                 borderTop: '1px solid rgba(0,0,0,0.06)',
+                flexWrap: 'wrap',
+                gap: 8,
               }}
             >
               <span style={{ fontSize: 12, color: '#9ca3af' }}>
-                Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+                {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
               </span>
               <div style={{ display: 'flex', gap: 6 }}>
                 <button
                   disabled={page === 1}
                   onClick={() => setPage(p => p - 1)}
                   style={{
-                    padding: '5px 10px',
+                    padding: '6px 10px',
                     borderRadius: 5,
-                    border: '1px solid rgba(0,0,0,0.07)',
+                    border: '1px solid #e5e7eb',
                     background: '#ffffff',
                     color: page === 1 ? '#d1d5db' : '#6b7280',
-                    cursor: page === 1 ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                   }}
                 >
                   <ChevronLeft size={14} />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map(p => (
                   <button
                     key={p}
                     onClick={() => setPage(p)}
                     style={{
-                      padding: '5px 10px',
+                      padding: '6px 10px',
                       borderRadius: 5,
-                      border: p === page ? '1px solid #e8424f40' : '1px solid rgba(0,0,0,0.07)',
+                      border: p === page ? '1px solid #e8424f40' : '1px solid #e5e7eb',
                       background: p === page ? 'rgba(196,30,45,0.1)' : '#ffffff',
                       color: p === page ? '#e8424f' : '#6b7280',
-                      cursor: 'pointer',
                       fontWeight: p === page ? 700 : 400,
                       fontSize: 13,
                     }}
@@ -376,12 +422,11 @@ export function Applications() {
                   disabled={page === totalPages}
                   onClick={() => setPage(p => p + 1)}
                   style={{
-                    padding: '5px 10px',
+                    padding: '6px 10px',
                     borderRadius: 5,
-                    border: '1px solid rgba(0,0,0,0.07)',
+                    border: '1px solid #e5e7eb',
                     background: '#ffffff',
                     color: page === totalPages ? '#d1d5db' : '#6b7280',
-                    cursor: page === totalPages ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                   }}
@@ -400,42 +445,61 @@ export function Applications() {
               position: 'fixed',
               top: 0,
               right: 0,
-              width: 480,
+              // Full-screen on mobile, 480px on tablet+
+              width: isMobile ? '100vw' : isNarrow ? '85vw' : 480,
               height: '100vh',
               background: '#ffffff',
               borderLeft: '1px solid #e5e7eb',
               zIndex: 50,
               display: 'flex',
               flexDirection: 'column',
-              boxShadow: '-20px 0 60px rgba(0,0,0,0.5)',
+              boxShadow: '-8px 0 40px rgba(0,0,0,0.15)',
             }}
           >
             {/* Drawer header */}
             <div
+              className="safe-top"
               style={{
-                padding: '20px 24px',
+                padding: '18px 20px',
                 borderBottom: '1px solid rgba(0,0,0,0.07)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}
             >
-              <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{selected.companyName}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {selected.companyName}
+                </div>
                 <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
               </div>
-              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}>
+              <button
+                onClick={() => setSelected(null)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 6,
+                  background: '#f3f4f6',
+                  border: 'none',
+                  color: '#6b7280',
+                  fontSize: 18,
+                  lineHeight: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  marginLeft: 12,
+                }}
+              >
                 ×
               </button>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
-              {/* Status */}
-              <div style={{ marginBottom: 24 }}>
+            <div className="scroll-ios" style={{ flex: 1, overflowY: 'auto', padding: '18px 20px' }}>
+              <div style={{ marginBottom: 20 }}>
                 <StatusBadge status={selected.status as ApplicationStatus} />
               </div>
 
-              {/* Sections */}
               {[
                 {
                   title: 'Business Details',
@@ -477,7 +541,7 @@ export function Applications() {
                   ],
                 },
               ].map(section => (
-                <div key={section.title} style={{ marginBottom: 24 }}>
+                <div key={section.title} style={{ marginBottom: 22 }}>
                   <div
                     style={{
                       fontSize: 11,
@@ -493,10 +557,7 @@ export function Applications() {
                     {section.title}
                   </div>
                   {section.rows.map(([k, v]) => (
-                    <div
-                      key={k}
-                      style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, gap: 8 }}
-                    >
+                    <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, gap: 8 }}>
                       <span style={{ fontSize: 12.5, color: '#9ca3af', flexShrink: 0 }}>{k}</span>
                       <span style={{ fontSize: 12.5, color: '#374151', textAlign: 'right', fontWeight: 500 }}>{v}</span>
                     </div>
@@ -504,7 +565,6 @@ export function Applications() {
                 </div>
               ))}
 
-              {/* Notes */}
               {selected.notes && (
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
@@ -529,8 +589,9 @@ export function Applications() {
 
             {/* Drawer footer */}
             <div
+              className="safe-bottom"
               style={{
-                padding: '14px 24px',
+                padding: '14px 20px',
                 borderTop: '1px solid rgba(0,0,0,0.07)',
                 display: 'flex',
                 gap: 10,
@@ -539,14 +600,13 @@ export function Applications() {
               <button
                 style={{
                   flex: 1,
-                  padding: '9px',
+                  padding: '11px',
                   borderRadius: 6,
                   border: '1px solid #e5e7eb',
                   background: '#ffffff',
                   color: '#6b7280',
                   fontSize: 13,
                   fontWeight: 600,
-                  cursor: 'pointer',
                 }}
               >
                 Edit
@@ -554,18 +614,16 @@ export function Applications() {
 
               {selected.status === 'approved' ? (
                 <button
-                  disabled
                   onClick={() => navigate('/clients')}
                   style={{
                     flex: 2,
-                    padding: '9px',
+                    padding: '11px',
                     borderRadius: 6,
                     border: '1px solid rgba(52,211,153,0.3)',
                     background: 'rgba(52,211,153,0.08)',
                     color: '#34d399',
                     fontSize: 13,
                     fontWeight: 600,
-                    cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -581,16 +639,13 @@ export function Applications() {
                   onClick={() => handleApprove(selected.id)}
                   style={{
                     flex: 2,
-                    padding: '9px',
+                    padding: '11px',
                     borderRadius: 6,
                     border: 'none',
-                    background: approving
-                      ? 'rgba(196,30,45,0.4)'
-                      : 'linear-gradient(135deg, #c41e2d, #a31825)',
+                    background: approving ? 'rgba(196,30,45,0.4)' : 'linear-gradient(135deg, #c41e2d, #a31825)',
                     color: '#fff',
                     fontSize: 13,
                     fontWeight: 600,
-                    cursor: approving ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -607,12 +662,7 @@ export function Applications() {
         {selected && (
           <div
             onClick={() => setSelected(null)}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.4)',
-              zIndex: 49,
-            }}
+            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 49 }}
           />
         )}
       </div>

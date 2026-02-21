@@ -1,4 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   FileText,
@@ -7,7 +8,9 @@ import {
   Users,
   BarChart3,
   Shield,
+  X,
 } from 'lucide-react';
+import { useLayout } from '../contexts/LayoutContext';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -20,8 +23,17 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar() {
+  const { sidebarOpen, closeSidebar, isNarrow } = useLayout();
+  const location = useLocation();
+
+  // Close sidebar on route change on mobile/tablet
+  useEffect(() => {
+    if (isNarrow) closeSidebar();
+  }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <aside
+      className="safe-bottom"
       style={{
         width: 240,
         minWidth: 240,
@@ -30,15 +42,32 @@ export function Sidebar() {
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
-        position: 'sticky',
-        top: 0,
+        // On narrow screens: fixed overlay drawer
+        ...(isNarrow
+          ? {
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              zIndex: 50,
+              transform: sidebarOpen ? 'translateX(0)' : 'translateX(-260px)',
+              transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+              boxShadow: sidebarOpen ? '8px 0 32px rgba(0,0,0,0.15)' : 'none',
+            }
+          : {
+              position: 'sticky',
+              top: 0,
+              flexShrink: 0,
+            }),
       }}
     >
-      {/* Logo */}
+      {/* Logo + close button */}
       <div
         style={{
-          padding: '24px 20px 20px',
+          padding: '20px 20px 18px',
           borderBottom: '1px solid #e5e7eb',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -68,10 +97,29 @@ export function Sidebar() {
             </div>
           </div>
         </div>
+        {/* Close button — only on narrow */}
+        {isNarrow && (
+          <button
+            onClick={closeSidebar}
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 6,
+              background: '#f3f4f6',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#6b7280',
+            }}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
-      <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
+      <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }} className="scroll-ios">
         <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '8px 10px 6px' }}>
           Main Menu
         </div>
@@ -84,7 +132,7 @@ export function Sidebar() {
               display: 'flex',
               alignItems: 'center',
               gap: 10,
-              padding: '9px 10px',
+              padding: '10px 10px',
               borderRadius: 6,
               marginBottom: 2,
               textDecoration: 'none',
@@ -94,6 +142,7 @@ export function Sidebar() {
               background: isActive ? 'rgba(196,30,45,0.07)' : 'transparent',
               color: isActive ? '#c41e2d' : '#4b5563',
               borderLeft: isActive ? '2px solid #c41e2d' : '2px solid transparent',
+              minHeight: 44, // 44px minimum tap target
             })}
           >
             <Icon size={16} strokeWidth={1.75} />

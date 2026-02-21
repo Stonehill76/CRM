@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check, ChevronRight, Building2, CreditCard, Layers, ArrowLeft } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
 import { createApplication } from '../lib/api';
+import { useLayout } from '../contexts/LayoutContext';
 import type { IntakeFormData, AccountType } from '../types';
 
 const US_STATES = [
@@ -12,11 +13,11 @@ const US_STATES = [
 ];
 
 const BUSINESS_TYPES = [
-  { value: 'corporation',       label: 'C Corporation' },
-  { value: 'llc',               label: 'LLC' },
-  { value: 'partnership',       label: 'Partnership / LP' },
+  { value: 'corporation',         label: 'C Corporation' },
+  { value: 'llc',                 label: 'LLC' },
+  { value: 'partnership',         label: 'Partnership / LP' },
   { value: 'sole_proprietorship', label: 'Sole Proprietorship' },
-  { value: 'nonprofit',         label: 'Nonprofit' },
+  { value: 'nonprofit',           label: 'Nonprofit' },
 ];
 
 const INDUSTRIES = [
@@ -27,23 +28,23 @@ const INDUSTRIES = [
 
 const ACCOUNT_OPTIONS: { value: AccountType; label: string; description: string; icon: string }[] = [
   { value: 'operating', label: 'Operating Account', description: 'Primary business checking for day-to-day transactions', icon: '🏦' },
-  { value: 'wire', label: 'Wire Transfer', description: 'Domestic & international wire origination and receipt', icon: '⚡' },
-  { value: 'ach', label: 'ACH Program', description: 'ACH origination, bulk payments, and direct deposit', icon: '🔄' },
-  { value: 'issuing', label: 'Card Issuing', description: 'Virtual and physical corporate card programs', icon: '💳' },
+  { value: 'wire',      label: 'Wire Transfer',     description: 'Domestic & international wire origination and receipt', icon: '⚡' },
+  { value: 'ach',       label: 'ACH Program',       description: 'ACH origination, bulk payments, and direct deposit', icon: '🔄' },
+  { value: 'issuing',   label: 'Card Issuing',       description: 'Virtual and physical corporate card programs', icon: '💳' },
 ];
 
 const SERVICE_OPTIONS = [
-  { value: 'fraud_monitoring',   label: 'Fraud Monitoring',       category: 'Risk & Compliance' },
-  { value: 'reconciliation_api', label: 'Reconciliation API',     category: 'Developer Tools' },
-  { value: 'virtual_accounts',   label: 'Virtual Accounts',       category: 'Account Features' },
-  { value: 'sweep_accounts',     label: 'Sweep Accounts',         category: 'Account Features' },
-  { value: 'interest_bearing',   label: 'Interest-Bearing',       category: 'Account Features' },
-  { value: 'ach_origination',    label: 'ACH Origination',        category: 'Payments' },
-  { value: 'wire_origination',   label: 'Wire Origination',       category: 'Payments' },
-  { value: 'bulk_payments',      label: 'Bulk Payments',          category: 'Payments' },
-  { value: 'expense_cards',      label: 'Expense Cards',          category: 'Card Programs' },
-  { value: 'webhooks',           label: 'Webhook Notifications',  category: 'Developer Tools' },
-  { value: 'reporting_api',      label: 'Reporting & Analytics API', category: 'Developer Tools' },
+  { value: 'fraud_monitoring',   label: 'Fraud Monitoring',           category: 'Risk & Compliance' },
+  { value: 'reconciliation_api', label: 'Reconciliation API',         category: 'Developer Tools' },
+  { value: 'virtual_accounts',   label: 'Virtual Accounts',           category: 'Account Features' },
+  { value: 'sweep_accounts',     label: 'Sweep Accounts',             category: 'Account Features' },
+  { value: 'interest_bearing',   label: 'Interest-Bearing',           category: 'Account Features' },
+  { value: 'ach_origination',    label: 'ACH Origination',            category: 'Payments' },
+  { value: 'wire_origination',   label: 'Wire Origination',           category: 'Payments' },
+  { value: 'bulk_payments',      label: 'Bulk Payments',              category: 'Payments' },
+  { value: 'expense_cards',      label: 'Expense Cards',              category: 'Card Programs' },
+  { value: 'webhooks',           label: 'Webhook Notifications',      category: 'Developer Tools' },
+  { value: 'reporting_api',      label: 'Reporting & Analytics API',  category: 'Developer Tools' },
 ];
 
 const INITIAL: IntakeFormData = {
@@ -78,12 +79,13 @@ function Input({ value, onChange, placeholder, type = 'text', disabled }: {
         background: '#ffffff',
         border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: 6,
-        padding: '9px 12px',
-        fontSize: 13.5,
+        padding: '10px 12px',
+        fontSize: 14, // ≥16px prevents iOS zoom (CSS override in index.css)
         color: '#111827',
         outline: 'none',
         transition: 'border-color 0.15s',
         opacity: disabled ? 0.5 : 1,
+        WebkitAppearance: 'none' as const,
       }}
       onFocus={e => (e.target.style.borderColor = '#e8424f')}
       onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.12)')}
@@ -104,36 +106,32 @@ function Select({ value, onChange, options, placeholder }: {
         background: '#ffffff',
         border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: 6,
-        padding: '9px 12px',
-        fontSize: 13.5,
+        padding: '10px 12px',
+        fontSize: 14,
         color: value ? '#111827' : '#9ca3af',
         outline: 'none',
-        cursor: 'pointer',
         appearance: 'none',
+        WebkitAppearance: 'none' as const,
       }}
     >
       {placeholder && <option value="" disabled>{placeholder}</option>}
       {options.map(o => (
-        <option key={o.value} value={o.value} style={{ background: '#ffffff' }}>{o.label}</option>
+        <option key={o.value} value={o.value}>{o.label}</option>
       ))}
     </select>
   );
 }
 
-function FormGrid({ children }: { children: React.ReactNode }) {
+function FormGrid({ children, isMobile }: { children: React.ReactNode; isMobile: boolean }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 20px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '14px 20px' }}>
       {children}
     </div>
   );
 }
 
 function FormField({ children, full }: { children: React.ReactNode; full?: boolean }) {
-  return (
-    <div style={full ? { gridColumn: '1 / -1' } : {}}>
-      {children}
-    </div>
-  );
+  return <div style={full ? { gridColumn: '1 / -1' } : {}}>{children}</div>;
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -144,12 +142,12 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ─── Step 1: Business Info ───────────────────────────────────────────────────
-function Step1({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof IntakeFormData, v: unknown) => void }) {
+// ─── Step 1 ────────────────────────────────────────────────────────────────────
+function Step1({ data, onChange, isMobile }: { data: IntakeFormData; onChange: (k: keyof IntakeFormData, v: unknown) => void; isMobile: boolean }) {
   return (
     <div>
       <SectionTitle>Company Information</SectionTitle>
-      <FormGrid>
+      <FormGrid isMobile={isMobile}>
         <FormField>
           <FieldLabel required>Company Name</FieldLabel>
           <Input value={data.companyName} onChange={v => onChange('companyName', v)} placeholder="Meridian Payments" />
@@ -183,7 +181,7 @@ function Step1({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
           <Input value={data.website} onChange={v => onChange('website', v)} placeholder="company.com" />
         </FormField>
         <FormField>
-          <FieldLabel required>Monthly Revenue</FieldLabel>
+          <FieldLabel required>Monthly Revenue ($)</FieldLabel>
           <Input value={data.monthlyRevenue} onChange={v => onChange('monthlyRevenue', v)} placeholder="500000" type="number" />
         </FormField>
         <FormField>
@@ -192,9 +190,9 @@ function Step1({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
         </FormField>
       </FormGrid>
 
-      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '24px 0' }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '22px 0' }} />
       <SectionTitle>Primary Contact</SectionTitle>
-      <FormGrid>
+      <FormGrid isMobile={isMobile}>
         <FormField>
           <FieldLabel required>First Name</FieldLabel>
           <Input value={data.firstName} onChange={v => onChange('firstName', v)} placeholder="Sarah" />
@@ -220,8 +218,8 @@ function Step1({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   );
 }
 
-// ─── Step 2: Account Selection ───────────────────────────────────────────────
-function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof IntakeFormData, v: unknown) => void }) {
+// ─── Step 2 ────────────────────────────────────────────────────────────────────
+function Step2({ data, onChange, isMobile }: { data: IntakeFormData; onChange: (k: keyof IntakeFormData, v: unknown) => void; isMobile: boolean }) {
   function toggleAccount(type: AccountType) {
     const current = data.accountTypes;
     if (current.includes(type)) onChange('accountTypes', current.filter(t => t !== type));
@@ -231,10 +229,10 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   return (
     <div>
       <SectionTitle>Select Account Types</SectionTitle>
-      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 20, lineHeight: 1.6 }}>
-        Choose one or more account products for this client. Multiple selections are supported.
+      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 16, lineHeight: 1.6 }}>
+        Choose one or more account products for this client.
       </p>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
         {ACCOUNT_OPTIONS.map(opt => {
           const active = data.accountTypes.includes(opt.value);
           return (
@@ -242,69 +240,56 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
               key={opt.value}
               onClick={() => toggleAccount(opt.value)}
               style={{
-                padding: '16px 18px',
+                padding: isMobile ? '14px 12px' : '16px 18px',
                 borderRadius: 8,
                 border: active ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
                 background: active ? 'rgba(196,30,45,0.08)' : '#ffffff',
-                cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s',
                 position: 'relative',
               }}
             >
               {active && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 10,
-                    right: 10,
-                    width: 18,
-                    height: 18,
-                    borderRadius: '50%',
-                    background: '#c41e2d',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
+                <div style={{ position: 'absolute', top: 8, right: 8, width: 18, height: 18, borderRadius: '50%', background: '#c41e2d', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Check size={11} color="#fff" strokeWidth={3} />
                 </div>
               )}
-              <div style={{ fontSize: 22, marginBottom: 8 }}>{opt.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#e8424f' : '#111827', marginBottom: 4 }}>
+              <div style={{ fontSize: isMobile ? 20 : 22, marginBottom: 6 }}>{opt.icon}</div>
+              <div style={{ fontSize: isMobile ? 12.5 : 13.5, fontWeight: 700, color: active ? '#e8424f' : '#111827', marginBottom: 3 }}>
                 {opt.label}
               </div>
-              <div style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.5 }}>{opt.description}</div>
+              {!isMobile && (
+                <div style={{ fontSize: 11.5, color: '#9ca3af', lineHeight: 1.5 }}>{opt.description}</div>
+              )}
             </button>
           );
         })}
       </div>
 
-      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', marginBottom: 24 }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', marginBottom: 22 }} />
       <SectionTitle>Transaction Profile</SectionTitle>
-      <FormGrid>
+      <FormGrid isMobile={isMobile}>
         <FormField>
           <FieldLabel required>Expected Monthly Volume ($)</FieldLabel>
           <Input value={data.monthlyTransactionVolume} onChange={v => onChange('monthlyTransactionVolume', v)} placeholder="5000000" type="number" />
         </FormField>
         <FormField>
           <FieldLabel>International Transactions</FieldLabel>
-          <div style={{ display: 'flex', gap: 10, marginTop: 2 }}>
-            {[{ v: false, l: 'No — Domestic Only' }, { v: true, l: 'Yes — International' }].map(opt => (
+          <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
+            {[{ v: false, l: 'Domestic Only' }, { v: true, l: 'International' }].map(opt => (
               <button
                 key={String(opt.v)}
                 onClick={() => onChange('internationalTransactions', opt.v)}
                 style={{
                   flex: 1,
-                  padding: '9px 14px',
+                  padding: '10px 8px',
                   borderRadius: 6,
                   border: data.internationalTransactions === opt.v ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
                   background: data.internationalTransactions === opt.v ? 'rgba(196,30,45,0.08)' : '#ffffff',
                   color: data.internationalTransactions === opt.v ? '#e8424f' : '#6b7280',
-                  fontSize: 12.5,
+                  fontSize: 12,
                   fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s',
+                  minHeight: 44,
                 }}
               >
                 {opt.l}
@@ -317,7 +302,7 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   );
 }
 
-// ─── Step 3: Services ────────────────────────────────────────────────────────
+// ─── Step 3 ────────────────────────────────────────────────────────────────────
 function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof IntakeFormData, v: unknown) => void }) {
   function toggleService(s: string) {
     const curr = data.requestedServices;
@@ -334,12 +319,12 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   return (
     <div>
       <SectionTitle>Additional Services</SectionTitle>
-      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 20, lineHeight: 1.6 }}>
-        Select any add-on services the client requires. All selections are optional.
+      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 16, lineHeight: 1.6 }}>
+        Select any add-on services. All selections are optional.
       </p>
       {Object.entries(grouped).map(([category, services]) => (
-        <div key={category} style={{ marginBottom: 22 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>
+        <div key={category} style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
             {category}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -350,18 +335,17 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                   key={svc.value}
                   onClick={() => toggleService(svc.value)}
                   style={{
-                    padding: '7px 14px',
+                    padding: '8px 14px',
                     borderRadius: 6,
                     border: active ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.07)',
                     background: active ? 'rgba(196,30,45,0.08)' : '#ffffff',
                     color: active ? '#e8424f' : '#6b7280',
                     fontSize: 12.5,
                     fontWeight: active ? 700 : 500,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 6,
+                    minHeight: 36,
                   }}
                 >
                   {active && <Check size={11} color="#e8424f" strokeWidth={2.5} />}
@@ -373,7 +357,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
         </div>
       ))}
 
-      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '20px 0 24px' }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '20px 0 22px' }} />
       <SectionTitle>Additional Notes</SectionTitle>
       <textarea
         value={data.additionalNotes}
@@ -386,7 +370,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
           border: '1px solid rgba(0,0,0,0.12)',
           borderRadius: 6,
           padding: '10px 12px',
-          fontSize: 13,
+          fontSize: 14,
           color: '#111827',
           outline: 'none',
           resize: 'vertical',
@@ -400,7 +384,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   );
 }
 
-// ─── Review Summary ───────────────────────────────────────────────────────────
+// ─── Review Summary ────────────────────────────────────────────────────────────
 function ReviewSummary({ data }: { data: IntakeFormData }) {
   const sections = [
     {
@@ -448,19 +432,19 @@ function ReviewSummary({ data }: { data: IntakeFormData }) {
           border: '1px solid rgba(196,30,45,0.2)',
           borderRadius: 8,
           padding: '14px 16px',
-          marginBottom: 24,
+          marginBottom: 22,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           gap: 10,
         }}
       >
-        <Check size={16} color="#e8424f" />
-        <span style={{ fontSize: 13, color: '#6b7280' }}>
+        <Check size={16} color="#e8424f" style={{ flexShrink: 0, marginTop: 1 }} />
+        <span style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.5 }}>
           Review the details below before submitting. You can go back to make edits.
         </span>
       </div>
       {sections.map(section => (
-        <div key={section.title} style={{ marginBottom: 20 }}>
+        <div key={section.title} style={{ marginBottom: 18 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
             {section.title}
           </div>
@@ -476,15 +460,16 @@ function ReviewSummary({ data }: { data: IntakeFormData }) {
   );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// ─── Main Component ────────────────────────────────────────────────────────────
 const STEPS = [
-  { label: 'Business Info',      icon: Building2 },
-  { label: 'Account Selection',  icon: CreditCard },
-  { label: 'Services',           icon: Layers },
+  { label: 'Business Info',     icon: Building2 },
+  { label: 'Account Selection', icon: CreditCard },
+  { label: 'Services',          icon: Layers },
 ];
 
 export function NewApplication() {
   const navigate = useNavigate();
+  const { isMobile } = useLayout();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<IntakeFormData>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
@@ -506,12 +491,14 @@ export function NewApplication() {
     }
   }
 
+  const pad = isMobile ? '16px' : '28px';
+
   if (submitted) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Topbar title="New Application" subtitle="Intake Form" />
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40 }}>
-          <div style={{ textAlign: 'center', maxWidth: 440 }}>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ textAlign: 'center', maxWidth: 400, width: '100%' }}>
             <div
               style={{
                 width: 72,
@@ -522,7 +509,7 @@ export function NewApplication() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 24px',
+                margin: '0 auto 20px',
               }}
             >
               <Check size={32} color="#c41e2d" strokeWidth={2.5} />
@@ -533,38 +520,20 @@ export function NewApplication() {
             <p style={{ fontSize: 14, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28 }}>
               <strong style={{ color: '#6b7280' }}>{data.companyName}</strong> has been submitted for review.
               {submittedId && (
-                <> Application ID: <span style={{ fontFamily: 'monospace', color: '#e8424f', fontWeight: 700 }}>{submittedId}</span>.</>
+                <> ID: <span style={{ fontFamily: 'monospace', color: '#e8424f', fontWeight: 700 }}>{submittedId}</span>.</>
               )}{' '}
-              It is now in the pending queue and will be assigned to a relationship manager.
+              It is now in the pending queue.
             </p>
-            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
                 onClick={() => { setData(INITIAL); setStep(0); setSubmitted(false); }}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: 6,
-                  border: '1px solid rgba(0,0,0,0.10)',
-                  background: '#ffffff',
-                  color: '#6b7280',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
+                style={{ padding: '11px 20px', borderRadius: 6, border: '1px solid rgba(0,0,0,0.10)', background: '#ffffff', color: '#6b7280', fontSize: 13, fontWeight: 600, minHeight: 44 }}
               >
                 New Application
               </button>
               <button
                 onClick={() => navigate('/applications')}
-                style={{
-                  padding: '10px 20px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: 'linear-gradient(135deg, #c41e2d, #a31825)',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
+                style={{ padding: '11px 20px', borderRadius: 6, border: 'none', background: 'linear-gradient(135deg, #c41e2d, #a31825)', color: '#fff', fontSize: 13, fontWeight: 600, minHeight: 44 }}
               >
                 View Applications
               </button>
@@ -580,65 +549,90 @@ export function NewApplication() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Topbar title="New Application" subtitle="Client Intake Form" />
-      <div style={{ flex: 1, padding: '32px 0', overflowY: 'auto' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto', padding: '0 28px' }}>
-          {/* Step progress */}
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 36 }}>
-            {STEPS.map((s, i) => {
-              const done = i < step;
-              const active = i === step;
-              return (
-                <div key={s.label} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : undefined }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div className="scroll-ios" style={{ flex: 1, padding: '24px 0', overflowY: 'auto' }}>
+        <div style={{ maxWidth: 720, margin: '0 auto', padding: `0 ${pad}` }}>
+
+          {/* Step indicator — compact on mobile, full on desktop */}
+          {isMobile ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 22 }}>
+              {STEPS.map((s, i) => {
+                const done = i < step;
+                const active = i === step;
+                return (
+                  <div key={s.label} style={{ display: 'flex', alignItems: 'center' }}>
                     <div
                       style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: '50%',
-                        border: done ? 'none' : active ? '2px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
-                        background: done ? '#c41e2d' : active ? 'rgba(196,30,45,0.1)' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.2s',
-                        flexShrink: 0,
+                        width: 32, height: 32, borderRadius: '50%',
+                        background: done ? '#c41e2d' : active ? 'rgba(196,30,45,0.1)' : '#f3f4f6',
+                        border: active ? '2px solid #c41e2d' : done ? 'none' : '1.5px solid #e5e7eb',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                       }}
                     >
-                      {done ? (
-                        <Check size={16} color="#fff" strokeWidth={2.5} />
-                      ) : (
-                        <s.icon size={15} color={active ? '#e8424f' : '#9ca3af'} />
-                      )}
+                      {done
+                        ? <Check size={14} color="#fff" strokeWidth={2.5} />
+                        : <span style={{ fontSize: 13, fontWeight: 700, color: active ? '#c41e2d' : '#9ca3af' }}>{i + 1}</span>
+                      }
                     </div>
-                    <div>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: done ? '#e8424f' : active ? '#e8424f' : '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
-                        Step {i + 1}
-                      </div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#111827' : done ? '#6b7280' : '#9ca3af' }}>
-                        {s.label}
-                      </div>
-                    </div>
+                    {i < STEPS.length - 1 && (
+                      <div style={{ width: 28, height: 2, background: done ? '#c41e2d' : '#e5e7eb', margin: '0 4px', borderRadius: 1 }} />
+                    )}
                   </div>
-                  {i < STEPS.length - 1 && (
-                    <div style={{ flex: 1, height: 1, background: done ? '#c41e2d' : 'rgba(0,0,0,0.07)', margin: '0 14px', transition: 'background 0.3s' }} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+              <span style={{ marginLeft: 10, fontSize: 13, fontWeight: 600, color: '#374151' }}>
+                {isReview ? 'Review' : STEPS[step]?.label}
+              </span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 32 }}>
+              {STEPS.map((s, i) => {
+                const done = i < step;
+                const active = i === step;
+                return (
+                  <div key={s.label} style={{ display: 'flex', alignItems: 'center', flex: i < STEPS.length - 1 ? 1 : undefined }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div
+                        style={{
+                          width: 36, height: 36, borderRadius: '50%',
+                          border: done ? 'none' : active ? '2px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
+                          background: done ? '#c41e2d' : active ? 'rgba(196,30,45,0.1)' : 'transparent',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          transition: 'all 0.2s', flexShrink: 0,
+                        }}
+                      >
+                        {done ? <Check size={16} color="#fff" strokeWidth={2.5} /> : <s.icon size={15} color={active ? '#e8424f' : '#9ca3af'} />}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 10, fontWeight: 600, color: done || active ? '#e8424f' : '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                          Step {i + 1}
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#111827' : done ? '#6b7280' : '#9ca3af' }}>
+                          {s.label}
+                        </div>
+                      </div>
+                    </div>
+                    {i < STEPS.length - 1 && (
+                      <div style={{ flex: 1, height: 1, background: done ? '#c41e2d' : 'rgba(0,0,0,0.07)', margin: '0 14px', transition: 'background 0.3s' }} />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Form card */}
           <div
             style={{
               background: '#ffffff',
               border: '1px solid rgba(0,0,0,0.10)',
-              borderRadius: 12,
-              padding: '28px 32px',
+              borderRadius: isMobile ? 10 : 12,
+              padding: isMobile ? '18px 16px' : '28px 32px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
             }}
           >
-            <div style={{ marginBottom: 28 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', marginBottom: 4 }}>
-                {isReview ? 'Review & Submit' : STEPS[step].label}
+            <div style={{ marginBottom: 22 }}>
+              <h2 style={{ fontSize: isMobile ? 16 : 18, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', marginBottom: 4 }}>
+                {isReview ? 'Review & Submit' : STEPS[step]?.label}
               </h2>
               <p style={{ fontSize: 13, color: '#9ca3af' }}>
                 {step === 0 && 'Enter company information and primary contact details.'}
@@ -648,27 +642,20 @@ export function NewApplication() {
               </p>
             </div>
 
-            {step === 0 && <Step1 data={data} onChange={change} />}
-            {step === 1 && <Step2 data={data} onChange={change} />}
+            {step === 0 && <Step1 data={data} onChange={change} isMobile={isMobile} />}
+            {step === 1 && <Step2 data={data} onChange={change} isMobile={isMobile} />}
             {step === 2 && <Step3 data={data} onChange={change} />}
             {isReview && <ReviewSummary data={data} />}
 
             {/* Navigation */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, paddingTop: 20, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 26, paddingTop: 18, borderTop: '1px solid rgba(0,0,0,0.06)', gap: 10 }}>
               <button
                 onClick={() => step > 0 ? setStep(s => s - 1) : navigate('/applications')}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  padding: '10px 18px',
-                  borderRadius: 6,
-                  border: '1px solid rgba(0,0,0,0.10)',
-                  background: 'transparent',
-                  color: '#6b7280',
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  padding: '11px 18px', borderRadius: 6,
+                  border: '1px solid rgba(0,0,0,0.10)', background: 'transparent',
+                  color: '#6b7280', fontSize: 13, fontWeight: 600, minHeight: 44,
                 }}
               >
                 <ArrowLeft size={14} />
@@ -678,20 +665,10 @@ export function NewApplication() {
                 disabled={isReview && submitting}
                 onClick={isReview ? handleSubmit : () => setStep(s => s + 1)}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  padding: '10px 22px',
-                  borderRadius: 6,
-                  border: 'none',
-                  background: isReview && submitting
-                    ? 'rgba(196,30,45,0.4)'
-                    : 'linear-gradient(135deg, #c41e2d, #a31825)',
-                  color: '#fff',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: isReview && submitting ? 'not-allowed' : 'pointer',
-                  letterSpacing: '-0.01em',
+                  display: 'flex', alignItems: 'center', gap: 7,
+                  padding: '11px 22px', borderRadius: 6, border: 'none',
+                  background: isReview && submitting ? 'rgba(196,30,45,0.4)' : 'linear-gradient(135deg, #c41e2d, #a31825)',
+                  color: '#fff', fontSize: 13, fontWeight: 700, minHeight: 44,
                 }}
               >
                 {isReview ? (submitting ? 'Submitting…' : 'Submit Application') : 'Continue'}
