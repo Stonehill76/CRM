@@ -57,7 +57,7 @@ const INITIAL: IntakeFormData = {
 
 function FieldLabel({ children, required }: { children: React.ReactNode; required?: boolean }) {
   return (
-    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#94a3b8', marginBottom: 5, letterSpacing: '0.02em' }}>
+    <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#6b7280', marginBottom: 5, letterSpacing: '0.02em' }}>
       {children}{required && <span style={{ color: '#e8424f', marginLeft: 3 }}>*</span>}
     </label>
   );
@@ -75,18 +75,18 @@ function Input({ value, onChange, placeholder, type = 'text', disabled }: {
       disabled={disabled}
       style={{
         width: '100%',
-        background: '#040d1a',
-        border: '1px solid rgba(51,65,85,0.6)',
+        background: '#ffffff',
+        border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: 6,
         padding: '9px 12px',
         fontSize: 13.5,
-        color: '#e2e8f0',
+        color: '#111827',
         outline: 'none',
         transition: 'border-color 0.15s',
         opacity: disabled ? 0.5 : 1,
       }}
       onFocus={e => (e.target.style.borderColor = '#e8424f')}
-      onBlur={e => (e.target.style.borderColor = 'rgba(51,65,85,0.6)')}
+      onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.12)')}
     />
   );
 }
@@ -101,12 +101,12 @@ function Select({ value, onChange, options, placeholder }: {
       onChange={e => onChange(e.target.value)}
       style={{
         width: '100%',
-        background: '#040d1a',
-        border: '1px solid rgba(51,65,85,0.6)',
+        background: '#ffffff',
+        border: '1px solid rgba(0,0,0,0.12)',
         borderRadius: 6,
         padding: '9px 12px',
         fontSize: 13.5,
-        color: value ? '#e2e8f0' : '#475569',
+        color: value ? '#111827' : '#9ca3af',
         outline: 'none',
         cursor: 'pointer',
         appearance: 'none',
@@ -114,7 +114,7 @@ function Select({ value, onChange, options, placeholder }: {
     >
       {placeholder && <option value="" disabled>{placeholder}</option>}
       {options.map(o => (
-        <option key={o.value} value={o.value} style={{ background: '#0d1f3c' }}>{o.label}</option>
+        <option key={o.value} value={o.value} style={{ background: '#ffffff' }}>{o.label}</option>
       ))}
     </select>
   );
@@ -138,7 +138,7 @@ function FormField({ children, full }: { children: React.ReactNode; full?: boole
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, marginTop: 8, paddingBottom: 8, borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+    <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 14, marginTop: 8, paddingBottom: 8, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
       {children}
     </div>
   );
@@ -192,7 +192,7 @@ function Step1({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
         </FormField>
       </FormGrid>
 
-      <div style={{ height: 1, background: 'rgba(51,65,85,0.3)', margin: '24px 0' }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '24px 0' }} />
       <SectionTitle>Primary Contact</SectionTitle>
       <FormGrid>
         <FormField>
@@ -231,7 +231,7 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   return (
     <div>
       <SectionTitle>Select Account Types</SectionTitle>
-      <p style={{ fontSize: 13, color: '#475569', marginBottom: 20, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 20, lineHeight: 1.6 }}>
         Choose one or more account products for this client. Multiple selections are supported.
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 28 }}>
@@ -244,8 +244,8 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
               style={{
                 padding: '16px 18px',
                 borderRadius: 8,
-                border: active ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
-                background: active ? 'rgba(196,30,45,0.08)' : '#040d1a',
+                border: active ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
+                background: active ? 'rgba(196,30,45,0.08)' : '#ffffff',
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'all 0.15s',
@@ -271,16 +271,16 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                 </div>
               )}
               <div style={{ fontSize: 22, marginBottom: 8 }}>{opt.icon}</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#e8424f' : '#e2e8f0', marginBottom: 4 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: active ? '#e8424f' : '#111827', marginBottom: 4 }}>
                 {opt.label}
               </div>
-              <div style={{ fontSize: 12, color: '#475569', lineHeight: 1.5 }}>{opt.description}</div>
+              <div style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.5 }}>{opt.description}</div>
             </button>
           );
         })}
       </div>
 
-      <div style={{ height: 1, background: 'rgba(51,65,85,0.3)', marginBottom: 24 }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', marginBottom: 24 }} />
       <SectionTitle>Transaction Profile</SectionTitle>
       <FormGrid>
         <FormField>
@@ -298,9 +298,9 @@ function Step2({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                   flex: 1,
                   padding: '9px 14px',
                   borderRadius: 6,
-                  border: data.internationalTransactions === opt.v ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
-                  background: data.internationalTransactions === opt.v ? 'rgba(196,30,45,0.08)' : '#040d1a',
-                  color: data.internationalTransactions === opt.v ? '#e8424f' : '#94a3b8',
+                  border: data.internationalTransactions === opt.v ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
+                  background: data.internationalTransactions === opt.v ? 'rgba(196,30,45,0.08)' : '#ffffff',
+                  color: data.internationalTransactions === opt.v ? '#e8424f' : '#6b7280',
                   fontSize: 12.5,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -334,12 +334,12 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
   return (
     <div>
       <SectionTitle>Additional Services</SectionTitle>
-      <p style={{ fontSize: 13, color: '#475569', marginBottom: 20, lineHeight: 1.6 }}>
+      <p style={{ fontSize: 13, color: '#9ca3af', marginBottom: 20, lineHeight: 1.6 }}>
         Select any add-on services the client requires. All selections are optional.
       </p>
       {Object.entries(grouped).map(([category, services]) => (
         <div key={category} style={{ marginBottom: 22 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 10 }}>
             {category}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -352,9 +352,9 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
                   style={{
                     padding: '7px 14px',
                     borderRadius: 6,
-                    border: active ? '1.5px solid #c41e2d' : '1px solid rgba(51,65,85,0.4)',
-                    background: active ? 'rgba(196,30,45,0.08)' : '#040d1a',
-                    color: active ? '#e8424f' : '#94a3b8',
+                    border: active ? '1.5px solid #c41e2d' : '1px solid rgba(0,0,0,0.07)',
+                    background: active ? 'rgba(196,30,45,0.08)' : '#ffffff',
+                    color: active ? '#e8424f' : '#6b7280',
                     fontSize: 12.5,
                     fontWeight: active ? 700 : 500,
                     cursor: 'pointer',
@@ -373,7 +373,7 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
         </div>
       ))}
 
-      <div style={{ height: 1, background: 'rgba(51,65,85,0.3)', margin: '20px 0 24px' }} />
+      <div style={{ height: 1, background: 'rgba(0,0,0,0.06)', margin: '20px 0 24px' }} />
       <SectionTitle>Additional Notes</SectionTitle>
       <textarea
         value={data.additionalNotes}
@@ -382,19 +382,19 @@ function Step3({ data, onChange }: { data: IntakeFormData; onChange: (k: keyof I
         rows={4}
         style={{
           width: '100%',
-          background: '#040d1a',
-          border: '1px solid rgba(51,65,85,0.6)',
+          background: '#ffffff',
+          border: '1px solid rgba(0,0,0,0.12)',
           borderRadius: 6,
           padding: '10px 12px',
           fontSize: 13,
-          color: '#e2e8f0',
+          color: '#111827',
           outline: 'none',
           resize: 'vertical',
           fontFamily: 'inherit',
           lineHeight: 1.6,
         }}
         onFocus={e => (e.target.style.borderColor = '#e8424f')}
-        onBlur={e => (e.target.style.borderColor = 'rgba(51,65,85,0.6)')}
+        onBlur={e => (e.target.style.borderColor = 'rgba(0,0,0,0.12)')}
       />
     </div>
   );
@@ -455,19 +455,19 @@ function ReviewSummary({ data }: { data: IntakeFormData }) {
         }}
       >
         <Check size={16} color="#e8424f" />
-        <span style={{ fontSize: 13, color: '#94a3b8' }}>
+        <span style={{ fontSize: 13, color: '#6b7280' }}>
           Review the details below before submitting. You can go back to make edits.
         </span>
       </div>
       {sections.map(section => (
         <div key={section.title} style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, paddingBottom: 6, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
             {section.title}
           </div>
           {section.rows.map(([k, v]) => (
             <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, gap: 16 }}>
-              <span style={{ fontSize: 12.5, color: '#475569' }}>{k}</span>
-              <span style={{ fontSize: 12.5, color: '#cbd5e1', textAlign: 'right', fontWeight: 500 }}>{v || '—'}</span>
+              <span style={{ fontSize: 12.5, color: '#9ca3af' }}>{k}</span>
+              <span style={{ fontSize: 12.5, color: '#374151', textAlign: 'right', fontWeight: 500 }}>{v || '—'}</span>
             </div>
           ))}
         </div>
@@ -527,11 +527,11 @@ export function NewApplication() {
             >
               <Check size={32} color="#c41e2d" strokeWidth={2.5} />
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#e2e8f0', marginBottom: 8, letterSpacing: '-0.03em' }}>
+            <h2 style={{ fontSize: 22, fontWeight: 800, color: '#111827', marginBottom: 8, letterSpacing: '-0.03em' }}>
               Application Submitted
             </h2>
-            <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.6, marginBottom: 28 }}>
-              <strong style={{ color: '#94a3b8' }}>{data.companyName}</strong> has been submitted for review.
+            <p style={{ fontSize: 14, color: '#9ca3af', lineHeight: 1.6, marginBottom: 28 }}>
+              <strong style={{ color: '#6b7280' }}>{data.companyName}</strong> has been submitted for review.
               {submittedId && (
                 <> Application ID: <span style={{ fontFamily: 'monospace', color: '#e8424f', fontWeight: 700 }}>{submittedId}</span>.</>
               )}{' '}
@@ -543,9 +543,9 @@ export function NewApplication() {
                 style={{
                   padding: '10px 20px',
                   borderRadius: 6,
-                  border: '1px solid rgba(51,65,85,0.5)',
-                  background: '#0d1f3c',
-                  color: '#94a3b8',
+                  border: '1px solid rgba(0,0,0,0.10)',
+                  background: '#ffffff',
+                  color: '#6b7280',
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -595,7 +595,7 @@ export function NewApplication() {
                         width: 36,
                         height: 36,
                         borderRadius: '50%',
-                        border: done ? 'none' : active ? '2px solid #c41e2d' : '1px solid rgba(51,65,85,0.5)',
+                        border: done ? 'none' : active ? '2px solid #c41e2d' : '1px solid rgba(0,0,0,0.10)',
                         background: done ? '#c41e2d' : active ? 'rgba(196,30,45,0.1)' : 'transparent',
                         display: 'flex',
                         alignItems: 'center',
@@ -607,20 +607,20 @@ export function NewApplication() {
                       {done ? (
                         <Check size={16} color="#fff" strokeWidth={2.5} />
                       ) : (
-                        <s.icon size={15} color={active ? '#e8424f' : '#334155'} />
+                        <s.icon size={15} color={active ? '#e8424f' : '#9ca3af'} />
                       )}
                     </div>
                     <div>
-                      <div style={{ fontSize: 10, fontWeight: 600, color: done ? '#e8424f' : active ? '#e8424f' : '#334155', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+                      <div style={{ fontSize: 10, fontWeight: 600, color: done ? '#e8424f' : active ? '#e8424f' : '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
                         Step {i + 1}
                       </div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#e2e8f0' : done ? '#94a3b8' : '#475569' }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: active ? '#111827' : done ? '#6b7280' : '#9ca3af' }}>
                         {s.label}
                       </div>
                     </div>
                   </div>
                   {i < STEPS.length - 1 && (
-                    <div style={{ flex: 1, height: 1, background: done ? '#c41e2d' : 'rgba(51,65,85,0.4)', margin: '0 14px', transition: 'background 0.3s' }} />
+                    <div style={{ flex: 1, height: 1, background: done ? '#c41e2d' : 'rgba(0,0,0,0.07)', margin: '0 14px', transition: 'background 0.3s' }} />
                   )}
                 </div>
               );
@@ -630,17 +630,17 @@ export function NewApplication() {
           {/* Form card */}
           <div
             style={{
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid rgba(0,0,0,0.10)',
               borderRadius: 12,
               padding: '28px 32px',
             }}
           >
             <div style={{ marginBottom: 28 }}>
-              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em', marginBottom: 4 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 800, color: '#111827', letterSpacing: '-0.02em', marginBottom: 4 }}>
                 {isReview ? 'Review & Submit' : STEPS[step].label}
               </h2>
-              <p style={{ fontSize: 13, color: '#475569' }}>
+              <p style={{ fontSize: 13, color: '#9ca3af' }}>
                 {step === 0 && 'Enter company information and primary contact details.'}
                 {step === 1 && 'Select the account types and transaction profile.'}
                 {step === 2 && 'Choose additional services and add any notes.'}
@@ -654,7 +654,7 @@ export function NewApplication() {
             {isReview && <ReviewSummary data={data} />}
 
             {/* Navigation */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, paddingTop: 20, borderTop: '1px solid rgba(51,65,85,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 32, paddingTop: 20, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
               <button
                 onClick={() => step > 0 ? setStep(s => s - 1) : navigate('/applications')}
                 style={{
@@ -663,9 +663,9 @@ export function NewApplication() {
                   gap: 7,
                   padding: '10px 18px',
                   borderRadius: 6,
-                  border: '1px solid rgba(51,65,85,0.5)',
+                  border: '1px solid rgba(0,0,0,0.10)',
                   background: 'transparent',
-                  color: '#94a3b8',
+                  color: '#6b7280',
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: 'pointer',

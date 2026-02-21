@@ -45,21 +45,22 @@ function StatCard({
   return (
     <div
       style={{
-        background: '#0d1f3c',
-        border: '1px solid rgba(51,65,85,0.5)',
+        background: '#ffffff',
+        border: '1px solid #e5e7eb',
         borderRadius: 10,
         padding: '20px 22px',
         display: 'flex',
         flexDirection: 'column',
         gap: 12,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
       }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <div style={{ fontSize: 12, color: '#475569', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          <div style={{ fontSize: 12, color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em' }}>
             {label}
           </div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.03em', lineHeight: 1.1, marginTop: 6 }}>
+          <div style={{ fontSize: 28, fontWeight: 800, color: '#111827', letterSpacing: '-0.03em', lineHeight: 1.1, marginTop: 6 }}>
             {value}
           </div>
         </div>
@@ -84,7 +85,7 @@ function StatCard({
           <span style={{ fontSize: 12, color: delta >= 0 ? '#34d399' : '#fb7185', fontWeight: 600 }}>
             {delta >= 0 ? '+' : ''}{delta}%
           </span>
-          <span style={{ fontSize: 12, color: '#475569' }}>{deltaLabel}</span>
+          <span style={{ fontSize: 12, color: '#9ca3af' }}>{deltaLabel}</span>
         </div>
       )}
     </div>
@@ -94,7 +95,7 @@ function StatCard({
 function StatusDistributionBar({ applications }: { applications: Application[] }) {
   if (applications.length === 0) {
     return (
-      <div style={{ marginTop: 6, fontSize: 13, color: '#334155' }}>
+      <div style={{ marginTop: 6, fontSize: 13, color: '#d1d5db' }}>
         No applications yet.
       </div>
     );
@@ -114,7 +115,7 @@ function StatusDistributionBar({ applications }: { applications: Application[] }
             key={status}
             style={{
               flex: count,
-              background: STATUS_CONFIG[status]?.dot || '#475569',
+              background: STATUS_CONFIG[status]?.dot || '#9ca3af',
             }}
           />
         ))}
@@ -131,9 +132,9 @@ function StatusDistributionBar({ applications }: { applications: Application[] }
                 display: 'inline-block',
               }}
             />
-            <span style={{ fontSize: 12, color: '#94a3b8' }}>
-              {STATUS_CONFIG[status]?.label} <span style={{ color: '#e2e8f0', fontWeight: 600 }}>{count}</span>
-              <span style={{ color: '#475569' }}> ({Math.round((count / total) * 100)}%)</span>
+            <span style={{ fontSize: 12, color: '#6b7280' }}>
+              {STATUS_CONFIG[status]?.label} <span style={{ color: '#111827', fontWeight: 600 }}>{count}</span>
+              <span style={{ color: '#9ca3af' }}> ({Math.round((count / total) * 100)}%)</span>
             </span>
           </div>
         ))}
@@ -205,16 +206,16 @@ export function Dashboard() {
           {/* Status distribution */}
           <div
             style={{
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 10,
               padding: '20px 22px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Pipeline Overview</div>
-                <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>Application status distribution</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Pipeline Overview</div>
+                <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>Application status distribution</div>
               </div>
               <Activity size={16} color="#475569" />
             </div>
@@ -224,20 +225,20 @@ export function Dashboard() {
           {/* Team */}
           <div
             style={{
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 10,
               padding: '20px 22px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Team Workload</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Team Workload</div>
               <Users size={16} color="#475569" />
             </div>
             {[
               { name: 'James Okafor', role: 'RM', count: applications.filter(a => a.assignedTo === 'James Okafor').length, initials: 'JO', color: '#e8424f' },
               { name: 'Priya Nair',   role: 'RM', count: applications.filter(a => a.assignedTo === 'Priya Nair').length,   initials: 'PN', color: '#a78bfa' },
-              { name: 'Unassigned',   role: '',   count: applications.filter(a => !a.assignedTo).length,                   initials: '—',  color: '#475569' },
+              { name: 'Unassigned',   role: '',   count: applications.filter(a => !a.assignedTo).length,                   initials: '—',  color: '#9ca3af' },
             ].map(member => (
               <div
                 key={member.name}
@@ -262,15 +263,15 @@ export function Dashboard() {
                   {member.initials}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#cbd5e1' }}>{member.name}</div>
-                  {member.role && <div style={{ fontSize: 11, color: '#475569' }}>{member.role}</div>}
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#374151' }}>{member.name}</div>
+                  {member.role && <div style={{ fontSize: 11, color: '#9ca3af' }}>{member.role}</div>}
                 </div>
                 <div
                   style={{
                     fontSize: 13,
                     fontWeight: 700,
-                    color: '#e2e8f0',
-                    background: 'rgba(51,65,85,0.3)',
+                    color: '#111827',
+                    background: 'rgba(0,0,0,0.06)',
                     padding: '2px 8px',
                     borderRadius: 4,
                   }}
@@ -287,8 +288,8 @@ export function Dashboard() {
           {/* Recent applications */}
           <div
             style={{
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 10,
               overflow: 'hidden',
             }}
@@ -299,10 +300,10 @@ export function Dashboard() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '18px 22px 14px',
-                borderBottom: '1px solid rgba(51,65,85,0.4)',
+                borderBottom: '1px solid rgba(0,0,0,0.07)',
               }}
             >
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Recent Applications</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Recent Applications</div>
               <button
                 onClick={() => navigate('/applications')}
                 style={{
@@ -321,13 +322,13 @@ export function Dashboard() {
               </button>
             </div>
             {recent.length === 0 ? (
-              <div style={{ padding: '32px 22px', textAlign: 'center', fontSize: 13, color: '#334155' }}>
+              <div style={{ padding: '32px 22px', textAlign: 'center', fontSize: 13, color: '#d1d5db' }}>
                 No applications yet. <button onClick={() => navigate('/new-application')} style={{ color: '#e8424f', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Create one →</button>
               </div>
             ) : (
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(51,65,85,0.3)' }}>
+                  <tr style={{ borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                     {['Company', 'Submitted', 'Status', 'Volume'].map(h => (
                       <th
                         key={h}
@@ -335,7 +336,7 @@ export function Dashboard() {
                           padding: '10px 22px',
                           textAlign: 'left',
                           fontSize: 11,
-                          color: '#475569',
+                          color: '#9ca3af',
                           fontWeight: 600,
                           letterSpacing: '0.06em',
                           textTransform: 'uppercase',
@@ -352,7 +353,7 @@ export function Dashboard() {
                       key={app.id}
                       onClick={() => navigate('/applications')}
                       style={{
-                        borderBottom: i < recent.length - 1 ? '1px solid rgba(51,65,85,0.25)' : 'none',
+                        borderBottom: i < recent.length - 1 ? '1px solid rgba(0,0,0,0.05)' : 'none',
                         cursor: 'pointer',
                         transition: 'background 0.12s',
                       }}
@@ -360,16 +361,16 @@ export function Dashboard() {
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                     >
                       <td style={{ padding: '12px 22px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{app.companyName}</div>
-                        <div style={{ fontSize: 11, color: '#475569' }}>{app.id}</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{app.id}</div>
                       </td>
-                      <td style={{ padding: '12px 22px', fontSize: 12.5, color: '#94a3b8' }}>
+                      <td style={{ padding: '12px 22px', fontSize: 12.5, color: '#6b7280' }}>
                         {fmtDate(app.submittedAt)}
                       </td>
                       <td style={{ padding: '12px 22px' }}>
                         <StatusBadge status={app.status as ApplicationStatus} size="sm" />
                       </td>
-                      <td style={{ padding: '12px 22px', fontSize: 13, color: '#e2e8f0', fontWeight: 600 }}>
+                      <td style={{ padding: '12px 22px', fontSize: 13, color: '#111827', fontWeight: 600 }}>
                         {fmt(app.monthlyTransactionVolume)}/mo
                       </td>
                     </tr>
@@ -382,15 +383,15 @@ export function Dashboard() {
           {/* Action items */}
           <div
             style={{
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 10,
               padding: '20px 22px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
               <AlertCircle size={15} color="#fbbf24" />
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Action Required</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Action Required</div>
               <span
                 style={{
                   fontSize: 11,
@@ -405,28 +406,28 @@ export function Dashboard() {
               </span>
             </div>
             {actionItems.length === 0 ? (
-              <div style={{ fontSize: 13, color: '#475569' }}>No action items.</div>
+              <div style={{ fontSize: 13, color: '#9ca3af' }}>No action items.</div>
             ) : (
               actionItems.map(app => (
                 <div
                   key={app.id}
                   style={{
-                    background: 'rgba(15,27,54,0.6)',
-                    border: '1px solid rgba(51,65,85,0.4)',
+                    background: '#f8f9fb',
+                    border: '1px solid rgba(0,0,0,0.07)',
                     borderRadius: 8,
                     padding: '12px 14px',
                     marginBottom: 10,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>{app.companyName}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
                     <StatusBadge status={app.status as ApplicationStatus} size="sm" />
                   </div>
-                  <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>{app.id}</div>
+                  <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>{app.id}</div>
                   {app.notes && (
-                    <div style={{ fontSize: 11.5, color: '#475569', lineHeight: 1.5 }}>{app.notes}</div>
+                    <div style={{ fontSize: 11.5, color: '#9ca3af', lineHeight: 1.5 }}>{app.notes}</div>
                   )}
-                  <div style={{ fontSize: 11, color: '#334155', marginTop: 6 }}>
+                  <div style={{ fontSize: 11, color: '#d1d5db', marginTop: 6 }}>
                     Assigned: {app.assignedTo || 'Unassigned'}
                   </div>
                 </div>
@@ -441,8 +442,8 @@ export function Dashboard() {
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 1,
-            background: 'rgba(51,65,85,0.3)',
-            border: '1px solid rgba(51,65,85,0.4)',
+            background: 'rgba(0,0,0,0.06)',
+            border: '1px solid rgba(0,0,0,0.07)',
             borderRadius: 10,
             overflow: 'hidden',
             marginTop: 28,
@@ -457,15 +458,15 @@ export function Dashboard() {
             <div
               key={kpi.label}
               style={{
-                background: '#0d1f3c',
+                background: '#ffffff',
                 padding: '16px 20px',
                 textAlign: 'center',
               }}
             >
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.03em' }}>
+              <div style={{ fontSize: 20, fontWeight: 800, color: '#111827', letterSpacing: '-0.03em' }}>
                 {kpi.value}
               </div>
-              <div style={{ fontSize: 11, color: '#475569', marginTop: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+              <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 {kpi.label}
               </div>
             </div>

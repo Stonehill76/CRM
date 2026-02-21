@@ -96,7 +96,7 @@ export function Applications() {
         padding: '11px 18px',
         textAlign: 'left',
         fontSize: 11,
-        color: col && sortKey === col ? '#e8424f' : '#475569',
+        color: col && sortKey === col ? '#e8424f' : '#9ca3af',
         fontWeight: 600,
         letterSpacing: '0.07em',
         textTransform: 'uppercase',
@@ -149,8 +149,8 @@ export function Applications() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 6,
               padding: '8px 12px',
               flex: '1 1 220px',
@@ -167,7 +167,7 @@ export function Applications() {
                 border: 'none',
                 outline: 'none',
                 fontSize: 13,
-                color: '#e2e8f0',
+                color: '#111827',
                 width: '100%',
               }}
             />
@@ -176,7 +176,7 @@ export function Applications() {
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Filter size={13} color="#475569" />
-              <span style={{ fontSize: 12, color: '#475569', fontWeight: 600 }}>Status:</span>
+              <span style={{ fontSize: 12, color: '#9ca3af', fontWeight: 600 }}>Status:</span>
             </div>
             {(['all', ...Object.keys(STATUS_CONFIG)] as Array<'all' | ApplicationStatus>).map(s => {
               const isActive = statusFilter === s;
@@ -190,11 +190,11 @@ export function Applications() {
                     borderRadius: 5,
                     border: isActive
                       ? `1px solid ${cfg?.color ?? '#e8424f'}60`
-                      : '1px solid rgba(51,65,85,0.4)',
+                      : '1px solid rgba(0,0,0,0.07)',
                     background: isActive
                       ? (cfg?.bg ?? 'rgba(196,30,45,0.08)')
-                      : '#0d1f3c',
-                    color: isActive ? (cfg?.color ?? '#e8424f') : '#94a3b8',
+                      : '#ffffff',
+                    color: isActive ? (cfg?.color ?? '#e8424f') : '#6b7280',
                     fontSize: 12,
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -211,15 +211,15 @@ export function Applications() {
         {/* Table */}
         <div
           style={{
-            background: '#0d1f3c',
-            border: '1px solid rgba(51,65,85,0.5)',
+            background: '#ffffff',
+            border: '1px solid #e5e7eb',
             borderRadius: 10,
             overflow: 'hidden',
           }}
         >
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-              <thead style={{ borderBottom: '1px solid rgba(51,65,85,0.4)', background: 'rgba(4,13,26,0.4)' }}>
+              <thead style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', background: '#f8f9fb' }}>
                 <tr>
                   <TH label="ID" style={{ width: 100 }} />
                   <TH label="Company" col="companyName" />
@@ -235,13 +235,13 @@ export function Applications() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
+                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
                       Loading…
                     </td>
                   </tr>
                 ) : paginated.length === 0 ? (
                   <tr>
-                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
+                    <td colSpan={9} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
                       No applications found
                     </td>
                   </tr>
@@ -250,7 +250,7 @@ export function Applications() {
                     <tr
                       key={app.id}
                       style={{
-                        borderBottom: i < paginated.length - 1 ? '1px solid rgba(51,65,85,0.2)' : 'none',
+                        borderBottom: i < paginated.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
                         transition: 'background 0.12s',
                         background: selected?.id === app.id ? 'rgba(196,30,45,0.04)' : 'transparent',
                         cursor: 'pointer',
@@ -265,14 +265,14 @@ export function Applications() {
                         </span>
                       </td>
                       <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#e2e8f0' }}>{app.companyName}</div>
-                        <div style={{ fontSize: 11, color: '#475569', marginTop: 1 }}>{app.industry}</div>
+                        <div style={{ fontSize: 13.5, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{app.industry}</div>
                       </td>
                       <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13, color: '#cbd5e1' }}>
+                        <div style={{ fontSize: 13, color: '#374151' }}>
                           {app.primaryContact.firstName} {app.primaryContact.lastName}
                         </div>
-                        <div style={{ fontSize: 11, color: '#475569' }}>{app.primaryContact.title}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{app.primaryContact.title}</div>
                       </td>
                       <td style={{ padding: '13px 18px' }}>
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
@@ -282,9 +282,9 @@ export function Applications() {
                               style={{
                                 fontSize: 10.5,
                                 fontWeight: 600,
-                                color: '#94a3b8',
-                                background: 'rgba(51,65,85,0.3)',
-                                border: '1px solid rgba(51,65,85,0.4)',
+                                color: '#6b7280',
+                                background: 'rgba(0,0,0,0.06)',
+                                border: '1px solid rgba(0,0,0,0.07)',
                                 padding: '2px 6px',
                                 borderRadius: 3,
                                 textTransform: 'uppercase',
@@ -296,22 +296,22 @@ export function Applications() {
                           ))}
                         </div>
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 13.5, fontWeight: 700, color: '#e2e8f0' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 13.5, fontWeight: 700, color: '#111827' }}>
                         {fmt(app.monthlyTransactionVolume)}
                       </td>
                       <td style={{ padding: '13px 18px' }}>
                         <StatusBadge status={app.status as ApplicationStatus} size="sm" />
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 12, color: '#94a3b8', whiteSpace: 'nowrap' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
                         {fmtDate(app.submittedAt)}
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 12.5, color: app.assignedTo ? '#cbd5e1' : '#334155' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 12.5, color: app.assignedTo ? '#374151' : '#d1d5db' }}>
                         {app.assignedTo || 'Unassigned'}
                       </td>
                       <td style={{ padding: '13px 18px' }}>
                         <button
                           onClick={e => { e.stopPropagation(); setSelected(selected?.id === app.id ? null : app); }}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#334155' }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d1d5db' }}
                         >
                           <ExternalLink size={14} />
                         </button>
@@ -331,10 +331,10 @@ export function Applications() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '12px 18px',
-                borderTop: '1px solid rgba(51,65,85,0.3)',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
               }}
             >
-              <span style={{ fontSize: 12, color: '#475569' }}>
+              <span style={{ fontSize: 12, color: '#9ca3af' }}>
                 Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
               </span>
               <div style={{ display: 'flex', gap: 6 }}>
@@ -344,9 +344,9 @@ export function Applications() {
                   style={{
                     padding: '5px 10px',
                     borderRadius: 5,
-                    border: '1px solid rgba(51,65,85,0.4)',
-                    background: '#071428',
-                    color: page === 1 ? '#334155' : '#94a3b8',
+                    border: '1px solid rgba(0,0,0,0.07)',
+                    background: '#ffffff',
+                    color: page === 1 ? '#d1d5db' : '#6b7280',
                     cursor: page === 1 ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -361,9 +361,9 @@ export function Applications() {
                     style={{
                       padding: '5px 10px',
                       borderRadius: 5,
-                      border: p === page ? '1px solid #e8424f40' : '1px solid rgba(51,65,85,0.4)',
-                      background: p === page ? 'rgba(196,30,45,0.1)' : '#071428',
-                      color: p === page ? '#e8424f' : '#94a3b8',
+                      border: p === page ? '1px solid #e8424f40' : '1px solid rgba(0,0,0,0.07)',
+                      background: p === page ? 'rgba(196,30,45,0.1)' : '#ffffff',
+                      color: p === page ? '#e8424f' : '#6b7280',
                       cursor: 'pointer',
                       fontWeight: p === page ? 700 : 400,
                       fontSize: 13,
@@ -378,9 +378,9 @@ export function Applications() {
                   style={{
                     padding: '5px 10px',
                     borderRadius: 5,
-                    border: '1px solid rgba(51,65,85,0.4)',
-                    background: '#071428',
-                    color: page === totalPages ? '#334155' : '#94a3b8',
+                    border: '1px solid rgba(0,0,0,0.07)',
+                    background: '#ffffff',
+                    color: page === totalPages ? '#d1d5db' : '#6b7280',
                     cursor: page === totalPages ? 'not-allowed' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
@@ -402,8 +402,8 @@ export function Applications() {
               right: 0,
               width: 480,
               height: '100vh',
-              background: '#071428',
-              borderLeft: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              borderLeft: '1px solid #e5e7eb',
               zIndex: 50,
               display: 'flex',
               flexDirection: 'column',
@@ -414,17 +414,17 @@ export function Applications() {
             <div
               style={{
                 padding: '20px 24px',
-                borderBottom: '1px solid rgba(51,65,85,0.4)',
+                borderBottom: '1px solid rgba(0,0,0,0.07)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}
             >
               <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0' }}>{selected.companyName}</div>
-                <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{selected.companyName}</div>
+                <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
               </div>
-              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', fontSize: 20, lineHeight: 1 }}>
+              <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}>
                 ×
               </button>
             </div>
@@ -482,12 +482,12 @@ export function Applications() {
                     style={{
                       fontSize: 11,
                       fontWeight: 600,
-                      color: '#475569',
+                      color: '#9ca3af',
                       textTransform: 'uppercase',
                       letterSpacing: '0.08em',
                       marginBottom: 10,
                       paddingBottom: 6,
-                      borderBottom: '1px solid rgba(51,65,85,0.3)',
+                      borderBottom: '1px solid rgba(0,0,0,0.06)',
                     }}
                   >
                     {section.title}
@@ -497,8 +497,8 @@ export function Applications() {
                       key={k}
                       style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, gap: 8 }}
                     >
-                      <span style={{ fontSize: 12.5, color: '#475569', flexShrink: 0 }}>{k}</span>
-                      <span style={{ fontSize: 12.5, color: '#cbd5e1', textAlign: 'right', fontWeight: 500 }}>{v}</span>
+                      <span style={{ fontSize: 12.5, color: '#9ca3af', flexShrink: 0 }}>{k}</span>
+                      <span style={{ fontSize: 12.5, color: '#374151', textAlign: 'right', fontWeight: 500 }}>{v}</span>
                     </div>
                   ))}
                 </div>
@@ -507,17 +507,17 @@ export function Applications() {
               {/* Notes */}
               {selected.notes && (
                 <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
                     Notes
                   </div>
                   <div
                     style={{
-                      background: 'rgba(15,27,54,0.5)',
-                      border: '1px solid rgba(51,65,85,0.3)',
+                      background: '#f8f9fb',
+                      border: '1px solid rgba(0,0,0,0.06)',
                       borderRadius: 6,
                       padding: '10px 12px',
                       fontSize: 12.5,
-                      color: '#94a3b8',
+                      color: '#6b7280',
                       lineHeight: 1.6,
                     }}
                   >
@@ -531,7 +531,7 @@ export function Applications() {
             <div
               style={{
                 padding: '14px 24px',
-                borderTop: '1px solid rgba(51,65,85,0.4)',
+                borderTop: '1px solid rgba(0,0,0,0.07)',
                 display: 'flex',
                 gap: 10,
               }}
@@ -541,9 +541,9 @@ export function Applications() {
                   flex: 1,
                   padding: '9px',
                   borderRadius: 6,
-                  border: '1px solid rgba(51,65,85,0.5)',
-                  background: '#0d1f3c',
-                  color: '#94a3b8',
+                  border: '1px solid #e5e7eb',
+                  background: '#ffffff',
+                  color: '#6b7280',
                   fontSize: 13,
                   fontWeight: 600,
                   cursor: 'pointer',
@@ -610,7 +610,7 @@ export function Applications() {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(4,13,26,0.6)',
+              background: 'rgba(0,0,0,0.4)',
               zIndex: 49,
             }}
           />

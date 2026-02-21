@@ -25,8 +25,8 @@ export function Sidebar() {
       style={{
         width: 240,
         minWidth: 240,
-        background: '#071428',
-        borderRight: '1px solid rgba(51,65,85,0.5)',
+        background: '#ffffff',
+        borderRight: '1px solid #e5e7eb',
         display: 'flex',
         flexDirection: 'column',
         height: '100vh',
@@ -38,7 +38,7 @@ export function Sidebar() {
       <div
         style={{
           padding: '24px 20px 20px',
-          borderBottom: '1px solid rgba(51,65,85,0.4)',
+          borderBottom: '1px solid #e5e7eb',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -60,10 +60,10 @@ export function Sidebar() {
             </svg>
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0', letterSpacing: '-0.02em' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', letterSpacing: '-0.02em' }}>
               Vault CRM
             </div>
-            <div style={{ fontSize: 10, color: '#475569', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
               Banking Platform
             </div>
           </div>
@@ -72,7 +72,7 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav style={{ flex: 1, padding: '12px 10px', overflowY: 'auto' }}>
-        <div style={{ fontSize: 10, color: '#475569', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '8px 10px 6px' }}>
+        <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', padding: '8px 10px 6px' }}>
           Main Menu
         </div>
         {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
@@ -91,9 +91,9 @@ export function Sidebar() {
               fontSize: 13.5,
               fontWeight: 500,
               transition: 'all 0.15s',
-              background: isActive ? 'rgba(196,30,45,0.08)' : 'transparent',
-              color: isActive ? '#e8424f' : '#94a3b8',
-              borderLeft: isActive ? '2px solid #e8424f' : '2px solid transparent',
+              background: isActive ? 'rgba(196,30,45,0.07)' : 'transparent',
+              color: isActive ? '#c41e2d' : '#4b5563',
+              borderLeft: isActive ? '2px solid #c41e2d' : '2px solid transparent',
             })}
           >
             <Icon size={16} strokeWidth={1.75} />
@@ -106,7 +106,7 @@ export function Sidebar() {
       <div
         style={{
           padding: '12px 16px',
-          borderTop: '1px solid rgba(51,65,85,0.4)',
+          borderTop: '1px solid #e5e7eb',
           display: 'flex',
           alignItems: 'center',
           gap: 10,
@@ -117,24 +117,24 @@ export function Sidebar() {
             width: 32,
             height: 32,
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #1a3a7a, #122a5e)',
-            border: '1px solid rgba(196,30,45,0.3)',
+            background: 'rgba(196,30,45,0.08)',
+            border: '1px solid rgba(196,30,45,0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 12,
             fontWeight: 700,
-            color: '#e8424f',
+            color: '#c41e2d',
             flexShrink: 0,
           }}
         >
           JO
         </div>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 12.5, fontWeight: 600, color: '#cbd5e1', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div style={{ fontSize: 12.5, fontWeight: 600, color: '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             James Okafor
           </div>
-          <div style={{ fontSize: 11, color: '#475569' }}>Relationship Manager</div>
+          <div style={{ fontSize: 11, color: '#9ca3af' }}>Relationship Manager</div>
         </div>
       </div>
     </aside>

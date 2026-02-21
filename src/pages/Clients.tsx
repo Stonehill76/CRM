@@ -50,8 +50,8 @@ export function Clients() {
               display: 'flex',
               alignItems: 'center',
               gap: 8,
-              background: '#0d1f3c',
-              border: '1px solid rgba(51,65,85,0.5)',
+              background: '#ffffff',
+              border: '1px solid #e5e7eb',
               borderRadius: 6,
               padding: '8px 12px',
               maxWidth: 320,
@@ -67,7 +67,7 @@ export function Clients() {
                 border: 'none',
                 outline: 'none',
                 fontSize: 13,
-                color: '#e2e8f0',
+                color: '#111827',
                 width: '100%',
               }}
             />
@@ -77,15 +77,15 @@ export function Clients() {
         {/* Table */}
         <div
           style={{
-            background: '#0d1f3c',
-            border: '1px solid rgba(51,65,85,0.5)',
+            background: '#ffffff',
+            border: '1px solid #e5e7eb',
             borderRadius: 10,
             overflow: 'hidden',
           }}
         >
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-              <thead style={{ borderBottom: '1px solid rgba(51,65,85,0.4)', background: 'rgba(4,13,26,0.4)' }}>
+              <thead style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', background: '#f8f9fb' }}>
                 <tr>
                   {['Company', 'Contact', 'Accounts', 'Monthly Volume', 'Revenue', 'Approved', 'RM', ''].map(h => (
                     <th
@@ -94,7 +94,7 @@ export function Clients() {
                         padding: '11px 18px',
                         textAlign: 'left',
                         fontSize: 11,
-                        color: '#475569',
+                        color: '#9ca3af',
                         fontWeight: 600,
                         letterSpacing: '0.07em',
                         textTransform: 'uppercase',
@@ -109,7 +109,7 @@ export function Clients() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} style={{ padding: '48px 22px', textAlign: 'center', color: '#475569', fontSize: 14 }}>
+                    <td colSpan={8} style={{ padding: '48px 22px', textAlign: 'center', color: '#9ca3af', fontSize: 14 }}>
                       Loading…
                     </td>
                   </tr>
@@ -122,7 +122,7 @@ export function Clients() {
                             width: 48,
                             height: 48,
                             borderRadius: '50%',
-                            background: 'rgba(51,65,85,0.2)',
+                            background: 'rgba(0,0,0,0.04)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -130,11 +130,11 @@ export function Clients() {
                         >
                           <Users size={20} color="#334155" />
                         </div>
-                        <div style={{ fontSize: 14, color: '#475569' }}>
+                        <div style={{ fontSize: 14, color: '#9ca3af' }}>
                           {search ? 'No clients match your search.' : 'No clients yet.'}
                         </div>
                         {!search && (
-                          <div style={{ fontSize: 12, color: '#334155' }}>
+                          <div style={{ fontSize: 12, color: '#9ca3af' }}>
                             Approve an application to add a client.{' '}
                             <button
                               onClick={() => navigate('/applications')}
@@ -152,7 +152,7 @@ export function Clients() {
                     <tr
                       key={client.id}
                       style={{
-                        borderBottom: i < filtered.length - 1 ? '1px solid rgba(51,65,85,0.2)' : 'none',
+                        borderBottom: i < filtered.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
                         transition: 'background 0.12s',
                         background: selected?.id === client.id ? 'rgba(52,211,153,0.04)' : 'transparent',
                         cursor: 'pointer',
@@ -162,14 +162,14 @@ export function Clients() {
                       onMouseLeave={e => { if (selected?.id !== client.id) e.currentTarget.style.background = 'transparent'; }}
                     >
                       <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13.5, fontWeight: 700, color: '#e2e8f0' }}>{client.companyName}</div>
-                        <div style={{ fontSize: 11, color: '#475569', marginTop: 1 }}>{client.industry}</div>
+                        <div style={{ fontSize: 13.5, fontWeight: 700, color: '#111827' }}>{client.companyName}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 1 }}>{client.industry}</div>
                       </td>
                       <td style={{ padding: '13px 18px' }}>
-                        <div style={{ fontSize: 13, color: '#cbd5e1' }}>
+                        <div style={{ fontSize: 13, color: '#374151' }}>
                           {client.primaryContact.firstName} {client.primaryContact.lastName}
                         </div>
-                        <div style={{ fontSize: 11, color: '#475569' }}>{client.primaryContact.email}</div>
+                        <div style={{ fontSize: 11, color: '#9ca3af' }}>{client.primaryContact.email}</div>
                       </td>
                       <td style={{ padding: '13px 18px' }}>
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
@@ -193,22 +193,22 @@ export function Clients() {
                           ))}
                         </div>
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 13.5, fontWeight: 700, color: '#e2e8f0' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 13.5, fontWeight: 700, color: '#111827' }}>
                         {fmt(client.monthlyTransactionVolume)}
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 13, color: '#94a3b8' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 13, color: '#6b7280' }}>
                         {fmt(client.monthlyRevenue)}/mo
                       </td>
                       <td style={{ padding: '13px 18px', fontSize: 12, color: '#34d399', whiteSpace: 'nowrap' }}>
                         {fmtDate(client.updatedAt)}
                       </td>
-                      <td style={{ padding: '13px 18px', fontSize: 12.5, color: client.assignedTo ? '#cbd5e1' : '#334155' }}>
+                      <td style={{ padding: '13px 18px', fontSize: 12.5, color: client.assignedTo ? '#374151' : '#9ca3af' }}>
                         {client.assignedTo || 'Unassigned'}
                       </td>
                       <td style={{ padding: '13px 18px' }}>
                         <button
                           onClick={e => { e.stopPropagation(); setSelected(selected?.id === client.id ? null : client); }}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#334155' }}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af' }}
                         >
                           <ExternalLink size={14} />
                         </button>
@@ -231,8 +231,8 @@ export function Clients() {
             right: 0,
             width: 480,
             height: '100vh',
-            background: '#071428',
-            borderLeft: '1px solid rgba(51,65,85,0.5)',
+            background: '#ffffff',
+            borderLeft: '1px solid #e5e7eb',
             zIndex: 50,
             display: 'flex',
             flexDirection: 'column',
@@ -242,15 +242,15 @@ export function Clients() {
           <div
             style={{
               padding: '20px 24px',
-              borderBottom: '1px solid rgba(51,65,85,0.4)',
+              borderBottom: '1px solid rgba(0,0,0,0.07)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}
           >
             <div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0' }}>{selected.companyName}</div>
-              <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{selected.companyName}</div>
+              <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span
@@ -268,7 +268,7 @@ export function Clients() {
               </span>
               <button
                 onClick={() => setSelected(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', fontSize: 20, lineHeight: 1 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#9ca3af', fontSize: 20, lineHeight: 1 }}
               >
                 ×
               </button>
@@ -322,12 +322,12 @@ export function Clients() {
                   style={{
                     fontSize: 11,
                     fontWeight: 600,
-                    color: '#475569',
+                    color: '#9ca3af',
                     textTransform: 'uppercase',
                     letterSpacing: '0.08em',
                     marginBottom: 10,
                     paddingBottom: 6,
-                    borderBottom: '1px solid rgba(51,65,85,0.3)',
+                    borderBottom: '1px solid rgba(0,0,0,0.06)',
                   }}
                 >
                   {section.title}
@@ -337,8 +337,8 @@ export function Clients() {
                     key={k}
                     style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, gap: 8 }}
                   >
-                    <span style={{ fontSize: 12.5, color: '#475569', flexShrink: 0 }}>{k}</span>
-                    <span style={{ fontSize: 12.5, color: '#cbd5e1', textAlign: 'right', fontWeight: 500 }}>{v}</span>
+                    <span style={{ fontSize: 12.5, color: '#9ca3af', flexShrink: 0 }}>{k}</span>
+                    <span style={{ fontSize: 12.5, color: '#374151', textAlign: 'right', fontWeight: 500 }}>{v}</span>
                   </div>
                 ))}
               </div>
@@ -352,7 +352,7 @@ export function Clients() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(4,13,26,0.6)',
+            background: 'rgba(0,0,0,0.4)',
             zIndex: 49,
           }}
         />
