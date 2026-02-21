@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -n \"api,vite\" -c \"cyan,magenta\" \"node server.cjs\" \"vite\"",
+    "dev": "node server.cjs & vite",
     "server": "node server.cjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
