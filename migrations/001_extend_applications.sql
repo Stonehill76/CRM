@@ -1,0 +1,44 @@
+-- Migration 001: Extend applications table with full CFSB onboarding fields
+-- Use ALTER TABLE to add columns without dropping/recreating the table
+
+ALTER TABLE applications ADD COLUMN trade_name TEXT;
+ALTER TABLE applications ADD COLUMN entity_type TEXT;
+ALTER TABLE applications ADD COLUMN country_of_incorporation TEXT;
+ALTER TABLE applications ADD COLUMN state_of_incorporation TEXT;
+ALTER TABLE applications ADD COLUMN date_of_incorporation TEXT;
+ALTER TABLE applications ADD COLUMN business_registration_number TEXT;
+ALTER TABLE applications ADD COLUMN naics_code TEXT;
+ALTER TABLE applications ADD COLUMN business_purpose TEXT;
+ALTER TABLE applications ADD COLUMN website_url TEXT;
+ALTER TABLE applications ADD COLUMN mailing_address_street TEXT;
+ALTER TABLE applications ADD COLUMN mailing_address_city TEXT;
+ALTER TABLE applications ADD COLUMN mailing_address_state TEXT;
+ALTER TABLE applications ADD COLUMN mailing_address_postal TEXT;
+ALTER TABLE applications ADD COLUMN mailing_address_country TEXT;
+ALTER TABLE applications ADD COLUMN account_type_operating INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN account_type_settlement INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN account_type_reserve INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN virtual_accounts_required INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN intended_use TEXT;
+ALTER TABLE applications ADD COLUMN source_of_funds TEXT;
+ALTER TABLE applications ADD COLUMN expected_monthly_transaction_count INTEGER;
+ALTER TABLE applications ADD COLUMN average_transaction_amount REAL;
+ALTER TABLE applications ADD COLUMN estimated_monthly_dollar_volume REAL;
+ALTER TABLE applications ADD COLUMN expected_average_balance REAL;
+ALTER TABLE applications ADD COLUMN customers_migrating TEXT;
+ALTER TABLE applications ADD COLUMN transition_plan_available INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN countries_customers_located TEXT;
+ALTER TABLE applications ADD COLUMN states_customers_located TEXT;
+ALTER TABLE applications ADD COLUMN customer_types TEXT;
+ALTER TABLE applications ADD COLUMN high_risk_jurisdictions INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN sanctioned_countries_involvement INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN ofac_screening_responsibility TEXT;
+ALTER TABLE applications ADD COLUMN bsa_aml_attestation INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN compliance_officer_name TEXT;
+ALTER TABLE applications ADD COLUMN compliance_officer_contact TEXT;
+ALTER TABLE applications ADD COLUMN compliance_controls_description TEXT;
+ALTER TABLE applications ADD COLUMN training_program_available INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN accuracy_attestation INTEGER DEFAULT 0;
+ALTER TABLE applications ADD COLUMN electronic_signature TEXT;
+ALTER TABLE applications ADD COLUMN signature_date TEXT;
+ALTER TABLE applications ADD COLUMN form_step_completed INTEGER DEFAULT 1;

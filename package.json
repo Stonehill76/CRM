@@ -8,7 +8,9 @@
     "server": "node server.cjs",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "migrate": "node scripts/migrate.cjs",
+    "seed": "node scripts/seed.cjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
