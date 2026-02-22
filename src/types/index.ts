@@ -1,10 +1,10 @@
 export type ApplicationStatus =
-  | 'pending_review'
-  | 'in_review'
+  | 'draft'
+  | 'submitted'
+  | 'compliance_review'
+  | 'action_required'
   | 'approved'
-  | 'rejected'
-  | 'on_hold'
-  | 'documents_needed';
+  | 'live';
 
 export type AccountType =
   | 'operating'

@@ -154,14 +154,14 @@ export function Dashboard() {
   }, []);
 
   const total       = applications.length;
-  const pending     = applications.filter(a => a.status === 'pending_review').length;
+  const pending     = applications.filter(a => a.status === 'submitted').length;
   const approved    = applications.filter(a => a.status === 'approved').length;
   const totalVolume = applications.reduce((s, a) => s + a.monthlyTransactionVolume, 0);
   const recent      = [...applications]
     .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
     .slice(0, 5);
   const actionItems = applications.filter(
-    a => a.status === 'documents_needed' || a.status === 'on_hold'
+    a => a.status === 'action_required' || a.status === 'compliance_review'
   );
 
   const pad = isMobile ? '16px' : '28px';
