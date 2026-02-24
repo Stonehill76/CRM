@@ -1,42 +1,31 @@
-import { STATUS_CONFIG } from '../data/applications';
-import type { ApplicationStatus } from '../types';
+import {
+  STATUS_LABELS,
+  STATUS_COLORS,
+  type ApplicationStatus,
+} from '../types/application';
+
+const DOT_COLORS: Record<ApplicationStatus, string> = {
+  draft: 'bg-gray-500',
+  submitted: 'bg-blue-600',
+  compliance_review: 'bg-amber-600',
+  action_required: 'bg-orange-600',
+  approved: 'bg-green-600',
+  live: 'bg-white',
+};
 
 interface StatusBadgeProps {
   status: ApplicationStatus;
-  size?: 'sm' | 'md';
 }
 
-export function StatusBadge({ status, size = 'md' }: StatusBadgeProps) {
-  const config = STATUS_CONFIG[status];
-  const fontSize = size === 'sm' ? 11 : 12;
-  const padding = size === 'sm' ? '2px 7px' : '3px 9px';
-
+export default function StatusBadge({ status }: StatusBadgeProps) {
   return (
     <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 5,
-        fontSize,
-        fontWeight: 600,
-        color: config.color,
-        background: config.bg,
-        padding,
-        borderRadius: 4,
-        border: `1px solid ${config.color}22`,
-        whiteSpace: 'nowrap',
-      }}
+      className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-semibold whitespace-nowrap ${STATUS_COLORS[status]}`}
     >
       <span
-        style={{
-          width: 5,
-          height: 5,
-          borderRadius: '50%',
-          background: config.dot,
-          flexShrink: 0,
-        }}
+        className={`h-1.5 w-1.5 shrink-0 rounded-full ${DOT_COLORS[status]}`}
       />
-      {config.label}
+      {STATUS_LABELS[status]}
     </span>
   );
 }
