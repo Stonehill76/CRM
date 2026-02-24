@@ -522,7 +522,7 @@ export function NewApplication() {
               {submittedId && (
                 <> ID: <span style={{ fontFamily: 'monospace', color: '#e8424f', fontWeight: 700 }}>{submittedId}</span>.</>
               )}{' '}
-              It is now in the pending queue.
+              It is now in the review queue.
             </p>
             <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
               <button

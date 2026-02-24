@@ -12,11 +12,12 @@ import {
   Activity,
 } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
-import { StatusBadge } from '../components/StatusBadge';
+import StatusBadge from '../components/StatusBadge';
+import { STATUS_LABELS, STATUS_COLORS, type ApplicationStatus } from '../types/application';
 import { STATUS_CONFIG } from '../data/applications';
 import { getApplications } from '../lib/api';
 import { useLayout } from '../contexts/LayoutContext';
-import type { Application, ApplicationStatus } from '../types';
+import type { Application } from '../types';
 
 function fmt(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -103,7 +104,9 @@ function StatusDistributionBar({ applications }: { applications: Application[] }
     );
   }
 
+  const allStatuses = Object.keys(STATUS_LABELS) as ApplicationStatus[];
   const counts: Record<string, number> = {};
+  allStatuses.forEach(s => { counts[s] = 0; });
   applications.forEach(a => {
     counts[a.status] = (counts[a.status] || 0) + 1;
   });
@@ -112,15 +115,15 @@ function StatusDistributionBar({ applications }: { applications: Application[] }
   return (
     <div style={{ marginTop: 6 }}>
       <div style={{ display: 'flex', borderRadius: 4, overflow: 'hidden', height: 8, gap: 1 }}>
-        {Object.entries(counts).map(([status, count]) => (
+        {allStatuses.filter(s => counts[s] > 0).map(status => (
           <div
             key={status}
-            style={{ flex: count, background: STATUS_CONFIG[status]?.dot || '#9ca3af' }}
+            style={{ flex: counts[status], background: STATUS_CONFIG[status]?.dot || '#9ca3af' }}
           />
         ))}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', marginTop: 12 }}>
-        {Object.entries(counts).map(([status, count]) => (
+        {allStatuses.map(status => (
           <div key={status} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
             <span
               style={{
@@ -133,9 +136,9 @@ function StatusDistributionBar({ applications }: { applications: Application[] }
               }}
             />
             <span style={{ fontSize: 12, color: '#6b7280' }}>
-              {STATUS_CONFIG[status]?.label}{' '}
-              <span style={{ color: '#111827', fontWeight: 600 }}>{count}</span>
-              <span style={{ color: '#9ca3af' }}> ({Math.round((count / total) * 100)}%)</span>
+              {STATUS_LABELS[status]}{' '}
+              <span style={{ color: '#111827', fontWeight: 600 }}>{counts[status]}</span>
+              <span style={{ color: '#9ca3af' }}> ({total > 0 ? Math.round((counts[status] / total) * 100) : 0}%)</span>
             </span>
           </div>
         ))}
@@ -154,15 +157,13 @@ export function Dashboard() {
   }, []);
 
   const total       = applications.length;
-  const pending     = applications.filter(a => a.status === 'submitted').length;
+  const pending     = applications.filter(a => a.status === 'submitted' || a.status === 'compliance_review').length;
   const approved    = applications.filter(a => a.status === 'approved').length;
   const totalVolume = applications.reduce((s, a) => s + a.monthlyTransactionVolume, 0);
   const recent      = [...applications]
     .sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime())
     .slice(0, 5);
-  const actionItems = applications.filter(
-    a => a.status === 'action_required' || a.status === 'compliance_review'
-  );
+  const actionItems = applications.filter(a => a.status === 'action_required');
 
   const pad = isMobile ? '16px' : '28px';
 
@@ -366,7 +367,7 @@ export function Dashboard() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 }}>
                       <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
-                      <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                      <StatusBadge status={app.status} />
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div style={{ fontSize: 11, color: '#9ca3af' }}>{fmtDate(app.submittedAt)}</div>
@@ -419,7 +420,7 @@ export function Dashboard() {
                         {fmtDate(app.submittedAt)}
                       </td>
                       <td style={{ padding: '12px 20px' }}>
-                        <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                        <StatusBadge status={app.status} />
                       </td>
                       <td style={{ padding: '12px 20px', fontSize: 13, color: '#111827', fontWeight: 600 }}>
                         {fmt(app.monthlyTransactionVolume)}/mo
@@ -472,7 +473,7 @@ export function Dashboard() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{app.companyName}</div>
-                    <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                    <StatusBadge status={app.status} />
                   </div>
                   <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 4 }}>{app.id}</div>
                   {app.notes && (

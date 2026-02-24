@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Users, ExternalLink } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
+import StatusBadge from '../components/StatusBadge';
 import { ACCOUNT_TYPE_CONFIG } from '../data/applications';
-import { getClients } from '../lib/api';
+import { getApplications } from '../lib/api';
 import { useLayout } from '../contexts/LayoutContext';
 import type { Application } from '../types';
 
@@ -25,8 +26,8 @@ export function Clients() {
   const [selected, setSelected] = useState<Application | null>(null);
 
   useEffect(() => {
-    getClients()
-      .then(setClients)
+    getApplications()
+      .then(data => setClients(data.filter(a => a.status === 'approved' || a.status === 'live')))
       .finally(() => setLoading(false));
   }, []);
 
@@ -123,9 +124,7 @@ export function Clients() {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 5 }}>
                       <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>{client.companyName}</div>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#34d399', background: 'rgba(52,211,153,0.1)', padding: '2px 8px', borderRadius: 10, flexShrink: 0, marginLeft: 8 }}>
-                        Active
-                      </span>
+                      <StatusBadge status={client.status} />
                     </div>
                     <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 6 }}>{client.primaryContact.email}</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -159,7 +158,7 @@ export function Clients() {
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
                 <thead style={{ borderBottom: '1px solid rgba(0,0,0,0.07)', background: '#f8f9fb' }}>
                   <tr>
-                    {['Company', 'Contact', 'Accounts', 'Monthly Volume', 'Revenue', 'Approved', 'RM', ''].map(h => (
+                    {['Company', 'Contact', 'Accounts', 'Monthly Volume', 'Revenue', 'Status', 'RM', ''].map(h => (
                       <th
                         key={h}
                         style={{
@@ -251,8 +250,8 @@ export function Clients() {
                         <td style={{ padding: '13px 16px', fontSize: 13, color: '#6b7280' }}>
                           {fmt(client.monthlyRevenue)}/mo
                         </td>
-                        <td style={{ padding: '13px 16px', fontSize: 12, color: '#34d399', whiteSpace: 'nowrap' }}>
-                          {fmtDate(client.updatedAt)}
+                        <td style={{ padding: '13px 16px' }}>
+                          <StatusBadge status={client.status} />
                         </td>
                         <td style={{ padding: '13px 16px', fontSize: 12.5, color: client.assignedTo ? '#374151' : '#9ca3af' }}>
                           {client.assignedTo || 'Unassigned'}
@@ -309,15 +308,7 @@ export function Clients() {
               <div style={{ fontSize: 12, color: '#9ca3af', marginTop: 2 }}>{selected.id} · {selected.legalName}</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0, marginLeft: 12 }}>
-              <span
-                style={{
-                  fontSize: 11, fontWeight: 700, color: '#34d399',
-                  background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.25)',
-                  padding: '3px 9px', borderRadius: 20,
-                }}
-              >
-                ● Active Client
-              </span>
+              <StatusBadge status={selected.status} />
               <button
                 onClick={() => setSelected(null)}
                 style={{

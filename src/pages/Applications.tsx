@@ -12,11 +12,12 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Topbar } from '../components/Topbar';
-import { StatusBadge } from '../components/StatusBadge';
+import StatusBadge from '../components/StatusBadge';
+import { STATUS_LABELS, type ApplicationStatus } from '../types/application';
 import { STATUS_CONFIG, ACCOUNT_TYPE_CONFIG } from '../data/applications';
 import { getApplications, updateApplicationStatus } from '../lib/api';
 import { useLayout } from '../contexts/LayoutContext';
-import type { Application, ApplicationStatus } from '../types';
+import type { Application } from '../types';
 
 function fmt(n: number) {
   if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
@@ -40,7 +41,7 @@ export function Applications() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Application | null>(null);
   const [page, setPage] = useState(1);
-  const [approving, setApproving] = useState(false);
+  const [updating, setUpdating] = useState(false);
   const PAGE_SIZE = 10;
 
   useEffect(() => {
@@ -49,14 +50,14 @@ export function Applications() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleApprove(id: string) {
-    setApproving(true);
+  async function handleStatusChange(id: string, status: ApplicationStatus) {
+    setUpdating(true);
     try {
-      const updated = await updateApplicationStatus(id, 'approved');
+      const updated = await updateApplicationStatus(id, status);
       setApplications(apps => apps.map(a => a.id === updated.id ? updated : a));
       setSelected(updated);
     } finally {
-      setApproving(false);
+      setUpdating(false);
     }
   }
 
@@ -182,7 +183,7 @@ export function Applications() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
               <Filter size={12} color="#9ca3af" />
             </div>
-            {(['all', ...Object.keys(STATUS_CONFIG)] as Array<'all' | ApplicationStatus>).map(s => {
+            {(['all', ...(Object.keys(STATUS_LABELS) as ApplicationStatus[])] as Array<'all' | ApplicationStatus>).map(s => {
               const isActive = statusFilter === s;
               const cfg = s !== 'all' ? STATUS_CONFIG[s] : null;
               return (
@@ -201,7 +202,7 @@ export function Applications() {
                     flexShrink: 0,
                   }}
                 >
-                  {s === 'all' ? 'All' : cfg?.label}
+                  {s === 'all' ? 'All' : STATUS_LABELS[s]}
                 </button>
               );
             })}
@@ -240,7 +241,7 @@ export function Applications() {
                       <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', flex: 1, marginRight: 8 }}>
                         {app.companyName}
                       </div>
-                      <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                      <StatusBadge status={app.status} />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
                       <span style={{ fontSize: 11, color: '#e8424f', fontFamily: 'monospace', fontWeight: 600, background: 'rgba(196,30,45,0.08)', padding: '1px 5px', borderRadius: 3 }}>
@@ -345,7 +346,7 @@ export function Applications() {
                           {fmt(app.monthlyTransactionVolume)}
                         </td>
                         <td style={{ padding: '13px 16px' }}>
-                          <StatusBadge status={app.status as ApplicationStatus} size="sm" />
+                          <StatusBadge status={app.status} />
                         </td>
                         <td style={{ padding: '13px 16px', fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
                           {fmtDate(app.submittedAt)}
@@ -497,7 +498,7 @@ export function Applications() {
 
             <div className="scroll-ios" style={{ flex: 1, overflowY: 'auto', padding: '18px 20px' }}>
               <div style={{ marginBottom: 20 }}>
-                <StatusBadge status={selected.status as ApplicationStatus} />
+                <StatusBadge status={selected.status} />
               </div>
 
               {[
@@ -594,13 +595,13 @@ export function Applications() {
                 padding: '14px 20px',
                 borderTop: '1px solid rgba(0,0,0,0.07)',
                 display: 'flex',
-                gap: 10,
+                gap: 8,
+                flexWrap: 'wrap',
               }}
             >
               <button
                 style={{
-                  flex: 1,
-                  padding: '11px',
+                  padding: '11px 16px',
                   borderRadius: 6,
                   border: '1px solid #e5e7eb',
                   background: '#ffffff',
@@ -612,12 +613,91 @@ export function Applications() {
                 Edit
               </button>
 
-              {selected.status === 'approved' ? (
+              {selected.status === 'submitted' && (
+                <button
+                  disabled={updating}
+                  onClick={() => handleStatusChange(selected.id, 'compliance_review')}
+                  style={{
+                    padding: '11px 16px',
+                    borderRadius: 6,
+                    border: '1px solid rgba(124,58,237,0.3)',
+                    background: 'rgba(124,58,237,0.08)',
+                    color: '#7c3aed',
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  Compliance Review
+                </button>
+              )}
+
+              {(selected.status === 'submitted' || selected.status === 'compliance_review') && (
+                <button
+                  disabled={updating}
+                  onClick={() => handleStatusChange(selected.id, 'action_required')}
+                  style={{
+                    padding: '11px 16px',
+                    borderRadius: 6,
+                    border: '1px solid rgba(217,119,6,0.3)',
+                    background: 'rgba(217,119,6,0.08)',
+                    color: '#d97706',
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  Request Info
+                </button>
+              )}
+
+              {selected.status !== 'approved' && selected.status !== 'live' && (
+                <button
+                  disabled={updating}
+                  onClick={() => handleStatusChange(selected.id, 'approved')}
+                  style={{
+                    padding: '11px 16px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: updating ? 'rgba(196,30,45,0.4)' : 'linear-gradient(135deg, #c41e2d, #a31825)',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <CheckCircle2 size={14} />
+                  {updating ? 'Updating…' : 'Approve'}
+                </button>
+              )}
+
+              {selected.status === 'approved' && (
+                <button
+                  disabled={updating}
+                  onClick={() => handleStatusChange(selected.id, 'live')}
+                  style={{
+                    padding: '11px 16px',
+                    borderRadius: 6,
+                    border: 'none',
+                    background: updating ? 'rgba(196,30,45,0.4)' : 'linear-gradient(135deg, #c41e2d, #a31825)',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <CheckCircle2 size={14} />
+                  {updating ? 'Updating…' : 'Mark Live'}
+                </button>
+              )}
+
+              {(selected.status === 'approved' || selected.status === 'live') && (
                 <button
                   onClick={() => navigate('/clients')}
                   style={{
-                    flex: 2,
-                    padding: '11px',
+                    padding: '11px 16px',
                     borderRadius: 6,
                     border: '1px solid rgba(52,211,153,0.3)',
                     background: 'rgba(52,211,153,0.08)',
@@ -626,34 +706,11 @@ export function Applications() {
                     fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
                     gap: 6,
                   }}
                 >
                   <CheckCircle2 size={14} />
-                  Approved — View in Clients
-                </button>
-              ) : (
-                <button
-                  disabled={approving}
-                  onClick={() => handleApprove(selected.id)}
-                  style={{
-                    flex: 2,
-                    padding: '11px',
-                    borderRadius: 6,
-                    border: 'none',
-                    background: approving ? 'rgba(196,30,45,0.4)' : 'linear-gradient(135deg, #c41e2d, #a31825)',
-                    color: '#fff',
-                    fontSize: 13,
-                    fontWeight: 600,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 6,
-                  }}
-                >
-                  <CheckCircle2 size={14} />
-                  {approving ? 'Approving…' : 'Approve'}
+                  View in Clients
                 </button>
               )}
             </div>
